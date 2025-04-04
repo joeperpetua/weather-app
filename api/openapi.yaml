@@ -1,0 +1,558 @@
+openapi: 3.0.2
+info:
+  title: "WeatherAPI"
+  version: "1.0.0"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+
+tags:
+  - name: Cities
+    description: Endpoints related to cities and countries.
+  - name: Forecast
+    description: Endpoints for retrieving weather forecasts.
+  - name: Historical
+    description: Endpoints for historical weather data.
+  - name: Admin
+    description: Administrative endpoints for managing cities.
+
+paths:
+  /cities:
+    get:
+      operationId: app.get_cities
+      summary: Get cities.
+      description: Returns a list of cities.
+      tags: 
+        - Cities
+      parameters:
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: String to filter results.
+          required: false
+          allowEmptyValue: true
+      responses:
+        200:
+          description: A list of cities.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/City"
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+  /forecast/{city_id}/daily:
+    get:
+      operationId: app.get_forecast_daily
+      summary: Get city daily forecasts.
+      description: Get daily forecast for a city over a given ammount of days.
+      tags: 
+        - Forecast
+      parameters:
+        - $ref: "#/components/parameters/cityIdParam"
+        - $ref: "#/components/parameters/daysParam"
+        - $ref: "#/components/parameters/unitsParam"
+      responses:
+        200:
+          description: A list of forecasted days.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForecastDaily"
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+  /forecast/{city_id}/hourly:
+    get:
+      operationId: app.get_forecast_hourly
+      summary: Get city hourly forecasts.
+      description: Get hourly forecast for a city over a given ammount of days.
+      tags: 
+        - Forecast
+      parameters:
+        - $ref: "#/components/parameters/cityIdParam"
+        - $ref: "#/components/parameters/daysParam"
+        - $ref: "#/components/parameters/unitsParam"
+        
+      responses:
+        200:
+          description: A list of forecasted hours.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForecastHourly"
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+  /historical/{city_id}:
+    get:
+      operationId: app.get_historical
+      summary: Get city historical data.
+      description: Get historical weather data for a city over a given date range in a hourly fashion.
+      tags: 
+        - Historical
+      parameters:
+        - $ref: "#/components/parameters/cityIdParam"
+        - in: query
+          name: from
+          description: Date from which to get historical data. ISO8601 format.
+          schema:
+            type: string
+            format: date
+          required: true
+        - in: query
+          name: to
+          description: Date to which to get historical data. ISO8601 format.
+          schema:
+            type: string
+            format: date
+          required: true
+      responses:
+        200:
+          description: A list of historical weather data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoricalHourly"
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+  /admin/login:
+    post:
+      operationId: app.admin_login
+      summary: Login.
+      description: Login to the admin panel.
+      security:
+        - basic: []
+      tags: 
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: my_admin
+                password: secure_password
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Administrator username.
+                password:
+                  type: string
+                  description: Administrator password.
+      responses:
+        200:
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                description: JWT token to use for authentication. Decoded payload contains iss, sub, exp and iat claims. Validity is 1 hour.
+                example:
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteV9hZG1pbiIsImV4cCI6MTc0MzcyMjg4NH0.B6SCMTvDQOL1w6uJN5vNC-ghGnqVSwsOINbkuHQ-eIs"
+                type: object
+                properties:
+                  token:
+                    type: string
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+  /cities/add:
+    post:
+      operationId: app.post_city_add
+      summary: Add city.
+      description: Add a new city to the database.
+      security:
+        - jwt: ['secret']
+      tags: 
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/City"
+      responses:
+        200:
+          description: City added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/City"
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+  
+  /city/{city_id}/edit:
+    put:
+      operationId: app.put_city_edit
+      summary: Edit city.
+      description: Edit a city in the database. Whole object will be overwritten with the provided data.
+      security:
+        - jwt: ['secret']
+      tags: 
+        - Admin
+      parameters:
+        - $ref: "#/components/parameters/cityIdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/City"
+      responses:
+        200:
+          description: City edited successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/City"
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+  /city/{city_id}/delete:
+    delete:
+      operationId: app.delete_city
+      summary: Delete city.
+      description: Delete a city from the database.
+      security:
+        - jwt: ['secret']
+      tags: 
+        - Admin
+      parameters:
+        - $ref: "#/components/parameters/cityIdParam"
+      responses:
+        200:
+          description: City deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: "City deleted successfully."
+        4XX:
+          $ref: "#/components/responses/ErrorResponse"
+        5XX:
+          $ref: "#/components/responses/ErrorResponse"
+
+
+      
+components:
+  securitySchemes:
+    basic:
+      type: http
+      scheme: basic
+      x-basicInfoFunc: app.basic_auth
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: app.decode_jwt
+  parameters:
+    cityIdParam:
+      in: path
+      name: city_id
+      schema:
+        type: integer
+      description: City ID to get data for.
+      required: true
+
+    daysParam:
+      in: query
+      name: days
+      description: Number of days to forecast. Specify 1 for current day.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 7
+      required: true
+
+    unitsParam:
+      in: query
+      name: units
+      description: Units to use for the returned data.
+      schema:
+        type: string
+        enum: [metric, imperial]
+      required: true
+
+  responses:
+    ErrorResponse:
+      description: Generic response for errors returned by the API.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      description: Generic error schema.
+      required: ["type", "title", "detail", "status"]
+      example: {
+        "type": "about:blank",
+        "title": "Bad Request",
+        "detail": "'password' is a required property",
+        "status": 400
+      }
+      properties:
+        type:
+          type: string
+          description: Error type. Default is "about:blank".
+        title:
+          type: string
+          description: Short description of the error.
+        detail:
+          type: string
+          description: Detailed description of the error.
+        status:
+          type: integer
+          description: HTTP status code.
+  
+    City:
+      type: object
+      description: City information.
+      required:
+        - city_name
+        - country
+        - country_code
+        - coordinates
+      example:
+        city_id: 23
+        city_name: "vienna"
+        country: "austria"
+        country_code: "AT"
+        coordinates: { lat: 48.210033, lon: 16.363449 }
+      properties:
+        city_id:
+          type: integer
+          description: City ID.
+        city_name:
+          type: string
+          description: City name.
+        country:
+          type: string
+          description: Country name.
+        country_code:
+          type: string
+          description: Country code.
+        coordinates:
+          type: object
+          properties:
+            lat:
+              type: number
+              description: Latitude.
+            lon:
+              type: number
+              description: Longitude.
+    
+    ForecastDaily:
+      type: object
+      description: A weather forecast containing daily weather data.
+      required:
+        - day
+        - weather_code
+        - temperature_min
+        - temperature_max
+        - precipitation_chance
+      example:
+        day: ["2023-01-01", "2023-01-02", "2023-01-03"]
+        weather_code: [0, 3, 3]
+        temperature_min: [10, 20, 30]
+        temperature_max: [20, 30, 40]
+        precipitation_chance: [10, 20, 30]
+      properties:
+        day:
+          description: List of forecast dates. ISO8601 format.
+          type: array
+          items:
+            type: string
+            format: date
+        weather_code:
+          type: array
+          description: Weather interpretation codes for each day.
+          items:
+            type: integer
+            minimum: 0
+            maximum: 99
+        temperature_min:
+          type: array
+          description: Minimum temperature for each day.
+          items:
+            type: number
+            minimum: -80
+            maximum: 140
+        temperature_max:
+          type: array
+          description: Maximum temperature for each day.
+          items:
+            type: number
+            minimum: -80
+            maximum: 140
+        precipitation_chance:
+          type: array
+          description: Median chance of precipitation for each day (percentage).
+          items:
+            type: number
+            minimum: 0
+            maximum: 100
+
+    ForecastHourly:
+      type: object
+      description: A weather forecast containing hourly weather data.
+      required:
+        - hour
+        - weather_code
+        - temperature
+        - precipitation_chance
+      example:
+        hour: [
+          "2025-04-03T00:00",
+          "2025-04-03T01:00",
+          "2025-04-03T02:00",
+          "2025-04-03T03:00",
+          "2025-04-03T04:00",
+          "2025-04-03T05:00",
+          "2025-04-03T06:00",
+          "2025-04-03T07:00",
+          "2025-04-03T08:00",
+          "2025-04-03T09:00",
+          "2025-04-03T10:00",
+          "2025-04-03T11:00",
+          "2025-04-03T12:00",
+          "2025-04-03T13:00",
+          "2025-04-03T14:00",
+          "2025-04-03T15:00",
+          "2025-04-03T16:00",
+          "2025-04-03T17:00",
+          "2025-04-03T18:00",
+          "2025-04-03T19:00",
+          "2025-04-03T20:00",
+          "2025-04-03T21:00",
+          "2025-04-03T22:00",
+          "2025-04-03T23:00"
+        ]
+        weather_code: [1, 0, 3, 2, 0, 1, 1, 2, 3, 0, 2, 1, 3, 3, 0, 2, 1, 0, 2, 3, 1, 0, 2, 3]
+        temperature: [10, 7, 14, 5, 11, 9, 6, 13, 8, 12, 5, 10, 7, 14, 6, 9, 11, 13, 8, 5, 12, 10, 7, 14]
+        precipitation_chance: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 25, 22, 8, 10, 5, 0, 0, 0, 0, 0]
+      properties:
+        hour:
+          description: Date and hour for each forecast. ISO8601 format.
+          type: array
+          items:
+            type: string
+            format: date-time
+        weather_code:
+          type: array
+          description: Weather interpretation codes for each hour.
+          items:
+            type: integer
+            minimum: 0
+            maximum: 99
+        temperature:
+          type: array
+          description: Temperature for each hour. 
+          items:
+            type: number
+            minimum: -80
+            maximum: 140
+        precipitation_chance:
+          type: array
+          description: Median chance of precipitation for each hour (percentage).
+          items:
+            type: number
+            minimum: 0
+            maximum: 100
+
+    HistoricalHourly:
+      type: object
+      description: A weather forecast containing hourly weather data.
+      required:
+        - hour
+        - weather_code
+        - temperature
+        - precipitation
+      example:
+        hour: [
+          "2025-04-03T00:00",
+          "2025-04-03T01:00",
+          "2025-04-03T02:00",
+          "2025-04-03T03:00",
+          "2025-04-03T04:00",
+          "2025-04-03T05:00",
+          "2025-04-03T06:00",
+          "2025-04-03T07:00",
+          "2025-04-03T08:00",
+          "2025-04-03T09:00",
+          "2025-04-03T10:00",
+          "2025-04-03T11:00",
+          "2025-04-03T12:00",
+          "2025-04-03T13:00",
+          "2025-04-03T14:00",
+          "2025-04-03T15:00",
+          "2025-04-03T16:00",
+          "2025-04-03T17:00",
+          "2025-04-03T18:00",
+          "2025-04-03T19:00",
+          "2025-04-03T20:00",
+          "2025-04-03T21:00",
+          "2025-04-03T22:00",
+          "2025-04-03T23:00"
+        ]
+        weather_code: [1, 0, 3, 2, 0, 1, 1, 2, 3, 0, 2, 1, 3, 3, 0, 2, 1, 0, 2, 3, 1, 0, 2, 3]
+        temperature: [10, 7, 14, 5, 11, 9, 6, 13, 8, 12, 5, 10, 7, 14, 6, 9, 11, 13, 8, 5, 12, 10, 7, 14]
+        precipitation: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      properties:
+        hour:
+          description: Date and hour for each forecast. ISO8601 format.
+          type: array
+          items:
+            type: string
+            format: date-time
+        weather_code:
+          type: array
+          description: Weather interpretation codes for each hour.
+          items:
+            type: integer
+            minimum: 0
+            maximum: 99
+        temperature:
+          type: array
+          description: Temperature for each hour. 
+          items:
+            type: number
+            minimum: -80
+            maximum: 140
+        precipitation:
+          type: array
+          description: Total precipitation for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 100
