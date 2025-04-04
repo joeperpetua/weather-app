@@ -135,30 +135,13 @@ paths:
     post:
       operationId: app.admin_login
       summary: Login.
-      description: Login to the admin panel.
+      description: Login to the admin panel. Authentication through HTTP Basic Auth ().
       security:
         - basic: []
       tags: 
         - Admin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                username: my_admin
-                password: secure_password
-              required:
-                - username
-                - password
-              properties:
-                username:
-                  type: string
-                  description: Administrator username.
-                password:
-                  type: string
-                  description: Administrator password.
+      parameters:
+        - $ref: "#/components/parameters/basicAuthHeader"
       responses:
         200:
           description: Login successful.
@@ -181,11 +164,13 @@ paths:
     post:
       operationId: app.post_city_add
       summary: Add city.
-      description: Add a new city to the database.
+      description: Add a new city to the database. Authentication through HTTP Bearer token (JWT).
       security:
         - jwt: ['secret']
       tags: 
         - Admin
+      parameters:
+        - $ref: "#/components/parameters/bearerAuthHeader"
       requestBody:
         required: true
         content:
@@ -215,6 +200,7 @@ paths:
         - Admin
       parameters:
         - $ref: "#/components/parameters/cityIdParam"
+        - $ref: "#/components/parameters/bearerAuthHeader"
       requestBody:
         required: true
         content:
@@ -244,6 +230,7 @@ paths:
         - Admin
       parameters:
         - $ref: "#/components/parameters/cityIdParam"
+        - $ref: "#/components/parameters/bearerAuthHeader"
       responses:
         200:
           description: City deleted successfully.
@@ -301,6 +288,30 @@ components:
         type: string
         enum: [metric, imperial]
       required: true
+
+    basicAuthHeader:
+      in: header
+      name: Authorization
+      required: true
+      description: |
+        HTTP Basic Auth header. 
+        
+        Format: Basic <base64-encoded username:password>
+      example: Basic bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+      schema:
+        type: string
+
+    bearerAuthHeader:
+      in: header
+      name: Authorization
+      required: true
+      description: |
+        HTTP Bearer Auth header. 
+        
+        Format: Bearer <jwt-token>
+      example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqb2VwZXJwZXR1YS53ZWF0aGVyYXBwLmNvbSIsInN1YiI6Im15X3VzZXJuYW1lIiwiZXhwIjoxNzQzODA1OTUzLCJpYXQiOjE3NDM4MDIzNTN9.C_CxFvzTOcfGx2BurjL5GmOl9r1Az4ioAK_KSuVSEjQ=
+      schema:
+        type: string
 
   responses:
     ErrorResponse:
