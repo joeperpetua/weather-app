@@ -22,7 +22,7 @@ tags:
 paths:
   /cities:
     get:
-      operationId: app.get_cities
+      operationId: endpoints.get_cities
       summary: Get cities.
       description: Returns a list of cities.
       tags: 
@@ -51,7 +51,7 @@ paths:
 
   /forecast/{city_id}/daily:
     get:
-      operationId: app.get_forecast_daily
+      operationId: endpoints.get_forecast_daily
       summary: Get city daily forecasts.
       description: Get daily forecast for a city over a given ammount of days.
       tags: 
@@ -74,7 +74,7 @@ paths:
 
   /forecast/{city_id}/hourly:
     get:
-      operationId: app.get_forecast_hourly
+      operationId: endpoints.get_forecast_hourly
       summary: Get city hourly forecasts.
       description: Get hourly forecast for a city over a given ammount of days.
       tags: 
@@ -98,7 +98,7 @@ paths:
 
   /historical/{city_id}:
     get:
-      operationId: app.get_historical
+      operationId: endpoints.get_historical
       summary: Get city historical data.
       description: Get historical weather data for a city over a given date range in a hourly fashion.
       tags: 
@@ -133,7 +133,7 @@ paths:
 
   /admin/login:
     post:
-      operationId: app.admin_login
+      operationId: endpoints.admin_login
       summary: Login.
       description: Login to the admin panel. Authentication through HTTP Basic Auth ().
       security:
@@ -162,7 +162,7 @@ paths:
 
   /cities/add:
     post:
-      operationId: app.post_city_add
+      operationId: endpoints.post_city_add
       summary: Add city.
       description: Add a new city to the database. Authentication through HTTP Bearer token (JWT).
       security:
@@ -191,7 +191,7 @@ paths:
   
   /city/{city_id}/edit:
     put:
-      operationId: app.put_city_edit
+      operationId: endpoints.put_city_edit
       summary: Edit city.
       description: Edit a city in the database. Whole object will be overwritten with the provided data.
       security:
@@ -221,7 +221,7 @@ paths:
 
   /city/{city_id}/delete:
     delete:
-      operationId: app.delete_city
+      operationId: endpoints.delete_city
       summary: Delete city.
       description: Delete a city from the database.
       security:
@@ -255,12 +255,12 @@ components:
     basic:
       type: http
       scheme: basic
-      x-basicInfoFunc: app.basic_auth
+      x-basicInfoFunc: security.basic_auth
     jwt:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      x-bearerInfoFunc: app.decode_jwt
+      x-bearerInfoFunc: security.decode_jwt
   parameters:
     cityIdParam:
       in: path
