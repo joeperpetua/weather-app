@@ -375,6 +375,7 @@ components:
           description: Country code.
         coordinates:
           type: object
+          required: ["lat", "lon"]
           properties:
             lat:
               type: number

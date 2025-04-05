@@ -1,5 +1,6 @@
 from typing import Optional
 from datetime import datetime
+from connexion.problem import problem
 from config import db
 from models import Admin, City
 from security import generate_jwt
@@ -34,10 +35,42 @@ def admin_login(user: str):
     return {'token': token}, 200
 
 def post_city_add(body: dict):
-    return {'city': body}, 200
+    city = City(
+        name=body['city_name'], 
+        country=body['country'], 
+        country_code=body['country_code'], 
+        lat=body['coordinates']['lat'], 
+        lon=body['coordinates']['lon']
+    )
+
+    db.session.add(city)
+    db.session.commit()
+    
+    return city.to_dict(), 200
 
 def put_city_edit(city_id: int, body: dict):
-    return {'city_id': city_id, 'city': body}, 200
+    city = db.session.execute(db.select(City).where(City.id == city_id)).scalar_one_or_none()
+
+    if city is None:
+        return problem(404, 'Not Found', 'City not found')
+    
+    city.name = body['city_name']
+    city.country = body['country']
+    city.country_code = body['country_code']
+    city.lat = body['coordinates']['lat']
+    city.lon = body['coordinates']['lon']
+
+    db.session.commit()
+
+    return city.to_dict(), 200
 
 def delete_city(city_id: int):
-    return {'city_id': city_id}, 200
+    city = db.session.execute(db.select(City).where(City.id == city_id)).scalar_one_or_none()
+
+    if city is None:
+        return problem(404, 'Not Found', 'City not found')
+    
+    db.session.delete(city)
+    db.session.commit()
+
+    return {'message': 'City deleted successfully.'}, 200
