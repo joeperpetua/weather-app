@@ -1,89 +1,105 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router";
+import { APIError } from "../types";
 
-interface TokenPayload {
+export interface TokenPayload {
   iss: string;
   sub: string;
   exp: number;
   iat: number;
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   username: string | null;
   token: string | null;
-  login: (formData: FormData) => Promise<{ success: boolean; data?: unknown }>;
+  hydrated: boolean;
+  login: (formData: FormData) => Promise<{ success: boolean; error?: Error }>;
   logout: () => void;
   validateToken: () => void;
 }
 
+const outOfContextError = () => console.error("useAuth called outside of <AuthProvider>");
+
 const defaultContextValue: AuthContextType = {
   username: null,
   token: null,
-  login: (_formData: FormData) => Promise.resolve({ success: false }),
-  logout: () => { },
-  validateToken: () => {}
-}
+  hydrated: false,
+  login: async () => { outOfContextError(); return { success: false }; },
+  logout: () => outOfContextError(),
+  validateToken: () => outOfContextError(),
+};
 
-const AuthContext = createContext(defaultContextValue);
+const AuthContext = createContext<AuthContextType>(defaultContextValue);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [token, setToken] = useState(() => sessionStorage.getItem("token") || null);
   const [username, setUsername] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const storedToken = sessionStorage.getItem("token");
+    if (storedToken) {
+      const decoded = jwtDecode<TokenPayload>(storedToken);
+      setToken(storedToken);
+      setUsername(decoded.sub);
+    }
+    setHydrated(true);
+  }, []);
 
   const login = async (formData: FormData) => {
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL, {
+      const encodedCredentials = btoa(`${formData.get("username")}:${formData.get("password")}`);
+
+      const response = await fetch("http://localhost:8000/admin/login", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Authorization": `Basic ${encodedCredentials}`
+        }
       });
 
       if (response?.status !== 200) {
-        throw new Error(JSON.stringify(await response.json()));
+        const error: APIError = await response.json();
+        console.error('Login not OK', error);
+        throw new Error(error.detail);
       };
 
       const json = await response.json();
 
-      setUsername(jwtDecode<TokenPayload>(json.data).sub);
+      setUsername(jwtDecode<TokenPayload>(json.token).sub);
       setToken(json.data);
 
-      sessionStorage.setItem("token", json.data);
-    } catch (error) {
-      console.error(error);
-      return { success: false, data: error };
-    }
+      sessionStorage.setItem("token", json.token);
 
-    return { success: true };
+      return { success: true };
+    } catch (error) {
+
+      if (error instanceof Error) {
+        return { success: false, error };
+      }
+
+      return { success: false, error: new Error('Unknown error while logging in. Please try again.') };
+    }
   };
 
   const logout = () => {
     setToken(null);
+    setUsername(null);
     sessionStorage.removeItem("token");
-
-    navigate('/');
+    navigate('/login');
   };
 
   const validateToken = () => {
     if (!token) return;
-
     const payload = jwtDecode<TokenPayload>(token);
-
     if (payload.exp < Date.now() / 1000) {
       logout();
     }
-  }
-
-  useEffect(() => {
-    if (token) {
-      setUsername(jwtDecode<TokenPayload>(token).sub);
-    } else {
-      setUsername(null);
-    }
-  }, [token]);
+  };
 
   return (
-    <AuthContext.Provider value={{ username, token, login, logout, validateToken }}>
+    <AuthContext.Provider value={{ username, token, hydrated, login, logout, validateToken }}>
       {children}
     </AuthContext.Provider>
   );

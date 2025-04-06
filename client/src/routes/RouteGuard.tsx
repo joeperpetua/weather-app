@@ -4,15 +4,26 @@ import { Block } from 'baseui/block'
 import { Heading, HeadingLevel } from 'baseui/heading'
 import { Button, SIZE } from "baseui/button";
 import { Link } from "react-router";
+import { useEffect } from "react";
 
 interface RouteGuardProps {
   children: React.ReactNode;
 }
 
 const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
-  const { username, validateToken } = useAuth();
+  const { username, validateToken, hydrated } = useAuth();
 
-  validateToken();
+  useEffect(() => {
+    if (hydrated) {
+      validateToken();
+    }
+  }, [hydrated, validateToken]);
+
+  console.log("Current username:", username);
+
+  if (!hydrated) {
+    return <div>Loading...</div>;
+  }
 
   if (!username) {
     return <Block
