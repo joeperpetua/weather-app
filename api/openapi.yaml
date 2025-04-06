@@ -49,7 +49,7 @@ paths:
         5XX:
           $ref: "#/components/responses/ErrorResponse"
 
-  /forecast/{city_id}/daily:
+  /forecast/{cityId}/daily:
     get:
       operationId: endpoints.get_forecast_daily
       summary: Get city daily forecasts.
@@ -72,7 +72,7 @@ paths:
         5XX:
           $ref: "#/components/responses/ErrorResponse"
 
-  /forecast/{city_id}/hourly:
+  /forecast/{cityId}/hourly:
     get:
       operationId: endpoints.get_forecast_hourly
       summary: Get city hourly forecasts.
@@ -96,7 +96,7 @@ paths:
         5XX:
           $ref: "#/components/responses/ErrorResponse"
 
-  /historical/{city_id}:
+  /historical/{cityId}:
     get:
       operationId: endpoints.get_historical
       summary: Get city historical data.
@@ -189,7 +189,7 @@ paths:
         5XX:
           $ref: "#/components/responses/ErrorResponse"
   
-  /city/{city_id}/edit:
+  /city/{cityId}/edit:
     put:
       operationId: endpoints.put_city_edit
       summary: Edit city.
@@ -219,7 +219,7 @@ paths:
         5XX:
           $ref: "#/components/responses/ErrorResponse"
 
-  /city/{city_id}/delete:
+  /city/{cityId}/delete:
     delete:
       operationId: endpoints.delete_city
       summary: Delete city.
@@ -264,7 +264,7 @@ components:
   parameters:
     cityIdParam:
       in: path
-      name: city_id
+      name: cityId
       schema:
         type: integer
       description: City ID to get data for.
@@ -355,22 +355,22 @@ components:
         - country_code
         - coordinates
       example:
-        city_id: 23
-        city_name: "vienna"
+        id: 23
+        cityName: "vienna"
         country: "austria"
-        country_code: "AT"
+        countryCode: "AT"
         coordinates: { lat: 48.210033, lon: 16.363449 }
       properties:
-        city_id:
+        id:
           type: integer
           description: City ID.
-        city_name:
+        cityName:
           type: string
           description: City name.
         country:
           type: string
           description: Country name.
-        country_code:
+        countryCode:
           type: string
           description: Country code.
         coordinates:
@@ -395,10 +395,10 @@ components:
         - precipitation_chance
       example:
         day: ["2023-01-01", "2023-01-02", "2023-01-03"]
-        weather_code: [0, 3, 3]
-        temperature_min: [10, 20, 30]
-        temperature_max: [20, 30, 40]
-        precipitation_chance: [10, 20, 30]
+        weatherCode: [0, 3, 3]
+        temperatureMin: [10, 20, 30]
+        temperatureMax: [20, 30, 40]
+        precipitationChance: [10, 20, 30]
       properties:
         day:
           description: List of forecast dates. ISO8601 format.
@@ -406,28 +406,28 @@ components:
           items:
             type: string
             format: date
-        weather_code:
+        weatherCode:
           type: array
           description: Weather interpretation codes for each day.
           items:
             type: integer
             minimum: 0
             maximum: 99
-        temperature_min:
+        temperatureMin:
           type: array
           description: Minimum temperature for each day.
           items:
             type: number
             minimum: -80
             maximum: 140
-        temperature_max:
+        temperatureMax:
           type: array
           description: Maximum temperature for each day.
           items:
             type: number
             minimum: -80
             maximum: 140
-        precipitation_chance:
+        precipitationChance:
           type: array
           description: Median chance of precipitation for each day (percentage).
           items:
@@ -440,9 +440,9 @@ components:
       description: A weather forecast containing hourly weather data.
       required:
         - hour
-        - weather_code
+        - weatherCode
         - temperature
-        - precipitation_chance
+        - precipitationChance
       example:
         hour: [
           "2025-04-03T00:00",
@@ -480,7 +480,7 @@ components:
           items:
             type: string
             format: date-time
-        weather_code:
+        weatherCode:
           type: array
           description: Weather interpretation codes for each hour.
           items:
@@ -494,7 +494,7 @@ components:
             type: number
             minimum: -80
             maximum: 140
-        precipitation_chance:
+        precipitationChance:
           type: array
           description: Median chance of precipitation for each hour (percentage).
           items:
@@ -507,7 +507,7 @@ components:
       description: A weather forecast containing hourly weather data.
       required:
         - hour
-        - weather_code
+        - weatherCode
         - temperature
         - precipitation
       example:
@@ -547,7 +547,7 @@ components:
           items:
             type: string
             format: date-time
-        weather_code:
+        weatherCode:
           type: array
           description: Weather interpretation codes for each hour.
           items:

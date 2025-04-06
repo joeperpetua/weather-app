@@ -17,10 +17,10 @@ class City(db.Model):
 
     def to_dict(self):
         return {
-            'city_id': self.id,
-            'city_name': self.name,
+            'id': self.id,
+            'cityName': self.name,
             'country': self.country,
-            'country_code': self.country_code,
+            'countryCode': self.country_code,
             'coordinates': {
                 'lat': self.lat,
                 'lon': self.lon

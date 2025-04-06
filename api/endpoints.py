@@ -15,19 +15,25 @@ def __validate_date(from_date: str, to_date: str):
     return
 
 def get_cities(city: Optional[str] = None):
-    return {'city': city}, 200
+    if city is None:
+        city = db.session.execute(db.select(City)).scalars().all()
+    else:
+        city = db.session.execute(db.select(City).where(City.name == city)).scalar_one_or_none()
 
-def get_forecast_daily(city_id: int, days: int, units: str):
+    response = [city.to_dict() for city in city]
+    return response, 200
 
-    return {'city_id': city_id, 'days': days, 'units': units}, 200
+def get_forecast_daily(cityId: int, days: int, units: str):
 
-def get_forecast_hourly(city_id: int, days: int, units: str):
+    return {'cityId': cityId, 'days': days, 'units': units}, 200
 
-    return {'city_id': city_id, 'days': days, 'units': units}, 200
+def get_forecast_hourly(cityId: int, days: int, units: str):
 
-def get_historical(city_id: int, from_date: str, to_date: str):
+    return {'cityId': cityId, 'days': days, 'units': units}, 200
+
+def get_historical(cityId: int, from_date: str, to_date: str):
     __validate_date(from_date, to_date)
-    return {'city_id': city_id, 'from': from_date, 'to': to_date}, 200
+    return {'cityId': cityId, 'from': from_date, 'to': to_date}, 200
 
 def admin_login(user: str):
     token = generate_jwt(user)
@@ -48,8 +54,8 @@ def post_city_add(body: dict):
     
     return city.to_dict(), 200
 
-def put_city_edit(city_id: int, body: dict):
-    city = db.session.execute(db.select(City).where(City.id == city_id)).scalar_one_or_none()
+def put_city_edit(cityId: int, body: dict):
+    city = db.session.execute(db.select(City).where(City.id == cityId)).scalar_one_or_none()
 
     if city is None:
         return problem(404, 'Not Found', 'City not found')
@@ -64,8 +70,8 @@ def put_city_edit(city_id: int, body: dict):
 
     return city.to_dict(), 200
 
-def delete_city(city_id: int):
-    city = db.session.execute(db.select(City).where(City.id == city_id)).scalar_one_or_none()
+def delete_city(cityId: int):
+    city = db.session.execute(db.select(City).where(City.id == cityId)).scalar_one_or_none()
 
     if city is None:
         return problem(404, 'Not Found', 'City not found')
