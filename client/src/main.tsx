@@ -6,9 +6,14 @@ import { Provider as StyletronProvider } from "styletron-react";
 import { LightTheme, BaseProvider } from "baseui";
 import './index.css'
 import Home from './routes/Home';
-import Dashboard from './routes/Dashboard';
+import DashboardRoot from './routes/Dashboard/DashboardRoot';
 import Layout from './routes/Layout';
 import DashboardLayout from './routes/DashboardLayout';
+import Login from './routes/Login';
+import { AuthProvider } from './providers/Auth';
+import DashboardEdit from './routes/Dashboard/DashboardEdit';
+import DashboardAdd from './routes/Dashboard/DashboardAdd';
+import NotFound from './routes/NotFound';
 
 const engine = new Styletron();
 
@@ -17,15 +22,22 @@ createRoot(document.getElementById('root')!).render(
     <StyletronProvider value={engine}>
       <BaseProvider theme={LightTheme}>
         <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />} >
-              <Route index path="/" element={<Home />} />
-            </Route>
-            
-            <Route element={<DashboardLayout />} >
-              <Route index path="/dashboard" element={<Dashboard />} />
-            </Route>
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route element={<Layout />} >
+                <Route index path="/" element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path='*' element={<NotFound />} />
+              </Route>
+
+              <Route path="dashboard" element={<DashboardLayout />}>
+                <Route index element={<DashboardRoot />} />
+                <Route path="edit/:id" element={<DashboardEdit />} />
+                <Route path="add" element={<DashboardAdd />} />
+              </Route>
+              
+            </Routes>
+          </AuthProvider>
         </BrowserRouter>
       </BaseProvider>
     </StyletronProvider>

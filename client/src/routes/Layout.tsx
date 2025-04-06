@@ -9,8 +9,8 @@ const Layout = () => {
     <Block
       display="flex"
       flexDirection="column"
-      padding={"4rem"}
-      width={"100%"}
+      justifyContent="space-between"
+      height="100vh"
     >
       <HeaderComponent />
       <main>
