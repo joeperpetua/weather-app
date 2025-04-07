@@ -350,9 +350,9 @@ components:
       type: object
       description: City information.
       required:
-        - city_name
+        - cityName
         - country
-        - country_code
+        - countryCode
         - coordinates
       example:
         id: 23
@@ -389,10 +389,10 @@ components:
       description: A weather forecast containing daily weather data.
       required:
         - day
-        - weather_code
-        - temperature_min
-        - temperature_max
-        - precipitation_chance
+        - weatherCode
+        - temperatureMin
+        - temperatureMax
+        - precipitationChance
       example:
         day: ["2023-01-01", "2023-01-02", "2023-01-03"]
         weatherCode: [0, 3, 3]

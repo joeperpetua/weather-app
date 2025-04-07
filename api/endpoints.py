@@ -46,10 +46,15 @@ def admin_login(user: str):
     return {'token': token}, 200
 
 def post_city_add(body: dict):
+    city_exists = db.session.execute(db.select(City).where(City.name == body['cityName'])).scalar_one_or_none()
+
+    if city_exists is not None:
+        return problem(400, 'Bad Request', 'City already exists')
+
     city = City(
-        name=body['city_name'], 
+        name=body['cityName'], 
         country=body['country'], 
-        country_code=body['country_code'], 
+        country_code=body['countryCode'], 
         lat=body['coordinates']['lat'], 
         lon=body['coordinates']['lon']
     )
@@ -65,9 +70,9 @@ def put_city_edit(cityId: int, body: dict):
     if city is None:
         return problem(404, 'Not Found', 'City not found')
     
-    city.name = body['city_name']
+    city.name = body['cityName']
     city.country = body['country']
-    city.country_code = body['country_code']
+    city.country_code = body['countryCode']
     city.lat = body['coordinates']['lat']
     city.lon = body['coordinates']['lon']
 
