@@ -7,10 +7,10 @@ const ErrorSnackbar = (
   enqueue: (elementProps: SnackbarElementProps, duration?: number) => void,
   dequeue: () => void
 ) => {
-  console.log(error);
+  const message = `${title}${title && "."} ${error}`
   enqueue({
     startEnhancer: () => <MdError />,
-    message: `${title}. ${error}`,
+    message,
     actionMessage: "Close",
     actionOnClick: () => dequeue(),
     overrides: { Root: { style: { background: "red" } } }

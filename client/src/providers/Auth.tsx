@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const encodedCredentials = btoa(`${formData.get("username")}:${formData.get("password")}`);
 
-      const response = await fetch("http://localhost:8000/admin/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/login`, {
         method: "POST",
         headers: {
           "Authorization": `Basic ${encodedCredentials}`

@@ -5,12 +5,14 @@ import { useNavigate, useParams } from "react-router";
 import { useAuth } from "../../providers/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { selectCityById, updateCity } from "../../features/citiesSlice";
+import { fetchCities, selectCityById, updateCity } from "../../features/citiesSlice";
 import NotFound from "../NotFound";
 import { City } from "../../types";
 import SuccessSnackbar from "../../ui/Snackbar/Success";
 import ErrorSnackbar from "../../ui/Snackbar/Error";
 import { useSnackbar } from "baseui/snackbar";
+import { useEffect } from "react";
+import PageSpinner from "../../ui/PageSpinner";
 
 const DashboardEdit = () => {
   const { token } = useAuth();
@@ -18,7 +20,14 @@ const DashboardEdit = () => {
   const params = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { enqueue, dequeue } = useSnackbar();
+  const { loading } = useSelector((state: RootState) => state.cities);
   const city = useSelector((state: RootState) => selectCityById(state.cities, Number(params.id) || -1));
+
+  useEffect(() => {
+    dispatch(fetchCities()).unwrap().catch(error => ErrorSnackbar('Failed to fetch cities.', error, enqueue, dequeue));
+  }, []);
+
+  if (loading) return <PageSpinner />
 
   if (!city) {
     return (
@@ -26,19 +35,8 @@ const DashboardEdit = () => {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, parsedCity: City) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const jsonData = { ...Object.fromEntries(formData) };
-    const parsedCity: City = {
-      cityName: jsonData.cityName as string,
-      country: jsonData.country as string,
-      countryCode: jsonData.countryCode as string,
-      coordinates: {
-        lat: parseFloat(jsonData.lat as unknown as string),
-        lon: parseFloat(jsonData.lon as unknown as string)
-      }
-    };
 
     dispatch(updateCity({ id: city.id!, city: parsedCity, token })).unwrap().then(() => {
       SuccessSnackbar("City edited successfully", "Back to dashboard", enqueue, () => navigate("/dashboard"));

@@ -17,19 +17,8 @@ const DashboardAdd = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, city: City) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const jsonData = { ...Object.fromEntries(formData) };
-    const city: City = {
-      cityName: jsonData.cityName as string,
-      country: jsonData.country as string,
-      countryCode: jsonData.countryCode as string,
-      coordinates: {
-        lat: parseFloat(jsonData.lat as unknown as string),
-        lon: parseFloat(jsonData.lon as unknown as string)
-      }
-    };
 
     dispatch(addCity({ city, token })).unwrap().then(() => {
       SuccessSnackbar("City added successfully", "Back to dashboard", enqueue, () => navigate("/dashboard"));

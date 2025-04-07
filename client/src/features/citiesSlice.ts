@@ -16,7 +16,7 @@ export const fetchCities = createAsyncThunk(
   "cities/fetchCities",
   async (_: void, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:8000/cities");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cities`);
 
       await throwOnAPIError('Cities fetch', response);
 
@@ -34,7 +34,7 @@ export const updateCity = createAsyncThunk(
   "cities/updateCity",
   async (args: { id: number, city: City, token: string | null }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:8000/city/${args.id}/edit`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/city/${args.id}/edit`, {
         method: "PUT",
         body: JSON.stringify(args.city),
         headers: {
@@ -59,7 +59,7 @@ export const addCity = createAsyncThunk(
   "cities/addCity",
   async (args: { city: City, token: string | null }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:8000/cities/add`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cities/add`, {
         method: "POST",
         body: JSON.stringify(args.city),
         headers: {
@@ -84,7 +84,7 @@ export const deleteCity = createAsyncThunk(
   "cities/deleteCity",
   async (args: { id: number, token: string | null }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:8000/city/${args.id}/delete`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/city/${args.id}/delete`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${args.token}`
