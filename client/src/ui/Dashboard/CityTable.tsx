@@ -1,4 +1,3 @@
-import { useStyletron } from "baseui";
 import {
   StatefulDataTable,
   NumericalColumn,
@@ -9,6 +8,9 @@ import {
 import { City, CityRowData } from "../../types";
 import { MdDelete, MdModeEdit } from "react-icons/md";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { Block } from "baseui/block";
 
 const columns = [
   NumericalColumn({
@@ -57,120 +59,15 @@ const genRows = (data: City[]) => {
   return rows;
 }
 
-const dummyData: City[] = [
-  {
-    "cityName": "Vienna",
-    "coordinates": {
-      "lat": 48.210033,
-      "lon": 16.363449
-    },
-    "country": "Austria",
-    "countryCode": "AT",
-    "id": 1
-  },
-  {
-    "cityName": "Paris",
-    "coordinates": {
-      "lat": 48.856613,
-      "lon": 2.352222
-    },
-    "country": "France",
-    "countryCode": "FR",
-    "id": 2
-  },
-  {
-    "cityName": "New York",
-    "coordinates": {
-      "lat": 40.712776,
-      "lon": -74.005974
-    },
-    "country": "USA",
-    "countryCode": "US",
-    "id": 3
-  },
-  {
-    "cityName": "Tokyo",
-    "coordinates": {
-      "lat": 35.689487,
-      "lon": 139.691711
-    },
-    "country": "Japan",
-    "countryCode": "JP",
-    "id": 4
-  },
-  {
-    "cityName": "Sydney",
-    "coordinates": {
-      "lat": -33.868820,
-      "lon": 151.209290
-    },
-    "country": "Australia",
-    "countryCode": "AU",
-    "id": 5
-  },
-  {
-    "cityName": "Cairo",
-    "coordinates": {
-      "lat": 30.044420,
-      "lon": 31.235712
-    },
-    "country": "Egypt",
-    "countryCode": "EG",
-    "id": 6
-  },
-  {
-    "cityName": "Rio de Janeiro",
-    "coordinates": {
-      "lat": -22.906847,
-      "lon": -43.172897
-    },
-    "country": "Brazil",
-    "countryCode": "BR",
-    "id": 7
-  },
-  {
-    "cityName": "Moscow",
-    "coordinates": {
-      "lat": 55.755825,
-      "lon": 37.617298
-    },
-    "country": "Russia",
-    "countryCode": "RU",
-    "id": 8
-  },
-  {
-    "cityName": "Beijing",
-    "coordinates": {
-      "lat": 39.904202,
-      "lon": 116.407394
-    },
-    "country": "China",
-    "countryCode": "CN",
-    "id": 9
-  },
-  {
-    "cityName": "Cape Town",
-    "coordinates": {
-      "lat": -33.924870,
-      "lon": 18.424055
-    },
-    "country": "South Africa",
-    "countryCode": "ZA",
-    "id": 10
-  }
-];
-
-
-
-export default function CityTable() {
-  const [css] = useStyletron();
+const CityTable = () => {
   const navigate = useNavigate();
-
+  const {cities, loading} = useSelector((state: RootState) => state.cities);
+  let rows: Row[] = cities ? genRows(cities) : [];
+  
   const editEntry = (row: Row) => {
     navigate(`/dashboard/edit/${row.data[0]}`);
   };
 
-  const rows = genRows(dummyData);
   const rowActions: RowAction[] = [
     {
       label: "Edit",
@@ -187,8 +84,17 @@ export default function CityTable() {
   ];
 
   return (
-    <div className={css({ height: "100%" })}>
-      <StatefulDataTable columns={columns} rows={rows} rowActions={rowActions} />
-    </div>
+    <Block height="100%">
+      <StatefulDataTable 
+        columns={columns} 
+        rows={rows} 
+        rowActions={rowActions} 
+        loading={loading}
+        loadingMessage="Fetching cities..."
+        emptyMessage={"No data available."}
+      />
+    </Block>
   );
 }
+
+export default CityTable;

@@ -19,10 +19,8 @@ const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
     }
   }, [hydrated, validateToken]);
 
-  console.log("Current username:", username);
-
   if (!hydrated) {
-    return <div>Loading...</div>;
+    return <></>;
   }
 
   if (!username) {

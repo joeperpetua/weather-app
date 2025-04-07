@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.6.1",
     "baseui": "^0.0.0-next-2113e1821",
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",

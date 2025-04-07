@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router";
-import { APIError } from "../types";
+import { throwOnAPIError, unknownToError } from "../error";
 
 export interface TokenPayload {
   iss: string;
@@ -58,12 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           "Authorization": `Basic ${encodedCredentials}`
         }
       });
-
-      if (response?.status !== 200) {
-        const error: APIError = await response.json();
-        console.error('Login not OK', error);
-        throw new Error(error.detail);
-      };
+      await throwOnAPIError('Login', response);
 
       const json = await response.json();
 
@@ -74,12 +69,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return { success: true };
     } catch (error) {
-
-      if (error instanceof Error) {
-        return { success: false, error };
-      }
-
-      return { success: false, error: new Error('Unknown error while logging in. Please try again.') };
+      return unknownToError('Login', error);
     }
   };
 
