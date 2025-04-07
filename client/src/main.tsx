@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { Client as Styletron } from "styletron-engine-monolithic";
 import { Provider as StyletronProvider } from "styletron-react";
 import { LightTheme, BaseProvider } from "baseui";
-import { SnackbarProvider } from 'baseui/snackbar';
+import { PLACEMENT, SnackbarProvider } from 'baseui/snackbar';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from './store';
 import './index.css'
@@ -25,7 +25,7 @@ createRoot(document.getElementById('root')!).render(
     <ReduxProvider store={store}>
       <StyletronProvider value={engine}>
         <BaseProvider theme={LightTheme}>
-          <SnackbarProvider>
+          <SnackbarProvider placement={PLACEMENT.bottom}>
             <BrowserRouter>
               <AuthProvider>
                 <Routes>

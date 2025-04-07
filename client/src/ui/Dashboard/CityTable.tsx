@@ -7,7 +7,6 @@ import {
 } from "baseui/data-table";
 import { City, CityRowData } from "../../types";
 import { MdDelete, MdModeEdit } from "react-icons/md";
-import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Block } from "baseui/block";
@@ -31,10 +30,12 @@ const columns = [
   }),
   NumericalColumn({
     title: "Latitude",
+    precision: 5,
     mapDataToValue: (data: CityRowData) => data[4],
   }),
   NumericalColumn({
     title: "Longitude",
+    precision: 5,
     mapDataToValue: (data: CityRowData) => data[5],
   }),
 ];
@@ -59,26 +60,25 @@ const genRows = (data: City[]) => {
   return rows;
 }
 
-const CityTable = () => {
-  const navigate = useNavigate();
+interface CityTableProps {
+  editHandler: (id: number) => void;
+  deleteHandler: (id: number) => void;
+};
+
+const CityTable: React.FC<CityTableProps> = ({ editHandler, deleteHandler }) => {
   const {cities, loading} = useSelector((state: RootState) => state.cities);
+
   let rows: Row[] = cities ? genRows(cities) : [];
-  
-  const editEntry = (row: Row) => {
-    navigate(`/dashboard/edit/${row.data[0]}`);
-  };
 
   const rowActions: RowAction[] = [
     {
-      label: "Edit",
-      onClick: ({ row }: { row: Row }) => editEntry(row),
+      label: "Edit city",
+      onClick: ({ row }: { row: Row }) => editHandler(row.data[0]),
       renderIcon: () => <MdModeEdit />
     },
     {
-      label: "Delete",
-      onClick: ({ row }: { row: Row }) => {
-        console.log('delete', row);
-      },
+      label: "Delete city",
+      onClick: ({ row }: { row: Row }) => deleteHandler(row.data[0]),
       renderIcon: () => <MdDelete />
     },
   ];

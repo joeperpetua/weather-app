@@ -6,7 +6,7 @@ export interface APIError {
 }
 
 export interface City {
-  id: number;
+  id?: number;
   cityName: string;
   country: string;
   countryCode: string;

@@ -45,6 +45,7 @@ const Login = () => {
             type="text"
             name="username"
             placeholder="Username"
+            required
           />
         </FormControl>
         <FormControl label="Password" error={error}>
@@ -53,6 +54,7 @@ const Login = () => {
             type="password"
             name="password"
             placeholder="Password"
+            required
           />
         </FormControl>
 

@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const json = await response.json();
 
       setUsername(jwtDecode<TokenPayload>(json.token).sub);
-      setToken(json.data);
+      setToken(json.token);
 
       sessionStorage.setItem("token", json.token);
 

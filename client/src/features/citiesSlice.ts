@@ -38,7 +38,8 @@ export const updateCity = createAsyncThunk(
         method: "PUT",
         body: JSON.stringify(args.city),
         headers: {
-          Authorization: `Bearer ${args.token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${args.token}`
         }
       });
 
@@ -58,11 +59,12 @@ export const addCity = createAsyncThunk(
   "cities/addCity",
   async (args: { city: City, token: string | null }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:8000/city/add`, {
+      const response = await fetch(`http://localhost:8000/cities/add`, {
         method: "POST",
         body: JSON.stringify(args.city),
         headers: {
-          Authorization: `Bearer ${args.token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${args.token}`
         }
       });
 
@@ -78,6 +80,27 @@ export const addCity = createAsyncThunk(
   }
 );
 
+export const deleteCity = createAsyncThunk(
+  "cities/deleteCity",
+  async (args: { id: number, token: string | null }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:8000/city/${args.id}/delete`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${args.token}`
+        }
+      });
+
+      await throwOnAPIError('City delete', response);
+
+      return args.id;
+    } catch (error) {
+      const parsed = unknownToError('City delete', error);
+      return rejectWithValue(parsed.error.message);
+    }
+  }
+);
+
 // Redux slice
 const citiesSlice = createSlice({
   name: "cities",
@@ -86,20 +109,21 @@ const citiesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch cases
-      .addCase(fetchCities.pending, (state) => {
-        console.log('pending');
-        state.loading = true;
-      })
-      .addCase(fetchCities.fulfilled, (state, action) => {
-        console.log('fulfilled');
-        state.loading = false;
-        state.cities = action.payload;
-      })
       .addCase(fetchCities.rejected, (state) => {
         state.loading = false;
       })
+      .addCase(fetchCities.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCities.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cities = action.payload;
+      })
 
       // Update cases
+      .addCase(updateCity.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(updateCity.pending, (state) => {
         state.loading = true;
       })
@@ -112,11 +136,11 @@ const citiesSlice = createSlice({
           return city;
         });
       })
-      .addCase(updateCity.rejected, (state) => {
-        state.loading = false;
-      })
 
       // Add cases
+      .addCase(addCity.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(addCity.pending, (state) => {
         state.loading = true;
       })
@@ -124,8 +148,17 @@ const citiesSlice = createSlice({
         state.loading = false;
         state.cities.push(action.payload);
       })
-      .addCase(addCity.rejected, (state) => {
+
+      // Delete cases
+      .addCase(deleteCity.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(deleteCity.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteCity.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cities = state.cities.filter(city => city.id !== action.payload);
       });
   },
 });
@@ -133,4 +166,5 @@ const citiesSlice = createSlice({
 // Export actions
 // export const { setCities } = citiesSlice.actions;
 export const selectCityByName = (state: CitiesState, name: string) => state.cities.find(city => city.cityName === name) || null;
+export const selectCityById = (state: CitiesState, id: number) => state.cities.find(city => city.id === id) || null;
 export default citiesSlice.reducer;
