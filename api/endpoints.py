@@ -15,12 +15,17 @@ def __validate_date(from_date: str, to_date: str):
     return
 
 def get_cities(city: Optional[str] = None):
+    response = []
+
     if city is None:
         city = db.session.execute(db.select(City)).scalars().all()
+        response = [city.to_dict() for city in city]
     else:
         city = db.session.execute(db.select(City).where(City.name == city)).scalar_one_or_none()
+        
+        if city:
+            response = [city.to_dict()]
 
-    response = [city.to_dict() for city in city]
     return response, 200
 
 def get_forecast_daily(cityId: int, days: int, units: str):
