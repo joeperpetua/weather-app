@@ -1,12 +1,9 @@
 import os
-from dotenv import load_dotenv
 from connexion import FlaskApp
 from connexion.middleware import MiddlewarePosition
 from starlette.middleware.cors import CORSMiddleware
 from sqlalchemy.engine import URL
 from flask_sqlalchemy import SQLAlchemy
-
-load_dotenv('.env')
 
 app = FlaskApp(__name__)
 app.add_api('openapi.yaml', resolver_error=501)
