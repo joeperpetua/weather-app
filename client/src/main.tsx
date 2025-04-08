@@ -17,7 +17,9 @@ import { AuthProvider } from './providers/Auth';
 import DashboardEdit from './routes/Dashboard/DashboardEdit';
 import DashboardAdd from './routes/Dashboard/DashboardAdd';
 import NotFound from './routes/NotFound';
-import theme from './theme';
+import { customTheme } from './customTheme';
+import City from './routes/City';
+// import { customThemeV2 } from './customThemeV2';
 
 const engine = new Styletron();
 
@@ -25,7 +27,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ReduxProvider store={store}>
       <StyletronProvider value={engine}>
-        <BaseProvider theme={theme}>
+        <BaseProvider theme={customTheme}>
           <SnackbarProvider placement={PLACEMENT.bottom}>
             <BrowserRouter>
               <AuthProvider>
@@ -33,6 +35,7 @@ createRoot(document.getElementById('root')!).render(
                   <Route element={<Layout />} >
                     <Route index path="/" element={<Home />} />
                     <Route path="login" element={<Login />} />
+                    <Route path="city/:countryCode/:cityName/:id" element={<City />} />
                     <Route path='*' element={<NotFound />} />
                   </Route>
 
