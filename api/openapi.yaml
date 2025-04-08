@@ -43,7 +43,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/City"
+                  $ref: "#/components/schemas/CityReturn"
         4XX:
           $ref: "#/components/responses/ErrorResponse"
         5XX:
@@ -176,14 +176,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/City"
+              $ref: "#/components/schemas/CityRequest"
       responses:
         200:
           description: City added successfully.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/City"
+                $ref: "#/components/schemas/CityReturn"
         4XX:
           $ref: "#/components/responses/ErrorResponse"
         5XX:
@@ -206,14 +206,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/City"
+              $ref: "#/components/schemas/CityRequest"
       responses:
         200:
           description: City edited successfully.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/City"
+                $ref: "#/components/schemas/CityReturn"
         4XX:
           $ref: "#/components/responses/ErrorResponse"
         5XX:
@@ -346,10 +346,45 @@ components:
           type: integer
           description: HTTP status code.
   
-    City:
+    CityRequest:
       type: object
-      description: City information.
+      description: City information present in a request object.
       required:
+        - cityName
+        - country
+        - countryCode
+        - coordinates
+      example:
+        cityName: "vienna"
+        country: "austria"
+        countryCode: "AT"
+        coordinates: { lat: 48.210033, lon: 16.363449 }
+      properties:
+        cityName:
+          type: string
+          description: City name.
+        country:
+          type: string
+          description: Country name.
+        countryCode:
+          type: string
+          description: Country code.
+        coordinates:
+          type: object
+          required: ["lat", "lon"]
+          properties:
+            lat:
+              type: number
+              description: Latitude.
+            lon:
+              type: number
+              description: Longitude.
+
+    CityReturn:
+      type: object
+      description: City information present in a return object. The only difference with the CityRequest schema is the addition of the city ID.
+      required:
+        - id
         - cityName
         - country
         - countryCode
