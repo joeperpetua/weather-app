@@ -10,6 +10,7 @@ const FooterComponent = () => {
       alignItems="center"
       padding="scale500"
       backgroundColor="mono200"
+      justifySelf="end"
     >
       <StyledLink href="/">Home</StyledLink>
       <StyledLink href="/about" style={{ marginLeft: "scale600" }}>

@@ -9,13 +9,13 @@ const Layout = () => {
     <Block
       display="flex"
       flexDirection="column"
-      justifyContent="space-between"
-      height="100vh"
+      
+      height="100%"
     >
       <HeaderComponent />
-      <main>
+      <Block as="main" height="100%">
         <Outlet />
-      </main>
+      </Block>
       <FooterComponent />
     </Block>
   );
