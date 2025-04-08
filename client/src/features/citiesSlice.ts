@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { City } from "../types";
 import { throwOnAPIError, unknownToError } from "../error";
+import { store } from "../store";
 
 interface CitiesState {
   cities: City[];
@@ -16,6 +17,11 @@ export const fetchCities = createAsyncThunk(
   "cities/fetchCities",
   async (_: void, { rejectWithValue }) => {
     try {
+      const citiesState = store.getState().cities;
+      if (citiesState.cities.length > 0) {
+        return citiesState.cities;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/cities`);
 
       await throwOnAPIError('Cities fetch', response);
