@@ -18,7 +18,7 @@ import DashboardEdit from './routes/Dashboard/DashboardEdit';
 import DashboardAdd from './routes/Dashboard/DashboardAdd';
 import NotFound from './routes/NotFound';
 import { customTheme } from './customTheme';
-import City from './routes/City';
+import CityRoute from './routes/City';
 // import { customThemeV2 } from './customThemeV2';
 
 const engine = new Styletron();
@@ -35,7 +35,7 @@ createRoot(document.getElementById('root')!).render(
                   <Route element={<Layout />} >
                     <Route index path="/" element={<Home />} />
                     <Route path="login" element={<Login />} />
-                    <Route path="city/:countryCode/:cityName/:id" element={<City />} />
+                    <Route path="city/:countryCode/:cityName/:id" element={<CityRoute />} />
                     <Route path='*' element={<NotFound />} />
                   </Route>
 

@@ -13,7 +13,7 @@ interface OptionT {
   id: string;
 }
 
-const cityOptions = (cities: City[]): OptionT[] => {
+const cityOptions = (cities: City[]) => {
   const cityOptions = cities.map((city) => ({
     label: `${city.cityName}, ${city.country}`,
     id: cityURL(city),
@@ -22,7 +22,7 @@ const cityOptions = (cities: City[]): OptionT[] => {
   return cityOptions;
 };
 
-function mapOptionToString(option: OptionT): string {
+const mapOptionToString = (option: OptionT) => {
   return option.label;
 }
 
@@ -57,7 +57,7 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
     navigate(cityOption.id);
   }
 
-  function cityLookup(searchTerm: string) {
+  const cityLookup = async (searchTerm: string) => {
     setTimeout(() => {
       const options = cityOptions(cities).filter((option) => {
         const optionAsString = mapOptionToString(option);
@@ -67,7 +67,7 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
     }, 500);
   }
 
-  async function handleChange(nextValue: string) {
+  const handleChange = async (nextValue: string) => {
     setValue(nextValue);
     cityLookup(nextValue);
   }
@@ -77,7 +77,7 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
   }, [location]);
 
   return (
-    <Block width={["80vw", "80vw", "50vw", "50vw"]} height={["6vh", "6vh", "7vh", "7vh"]}>
+    <Block width={["80vw", "80vw", "50vw", "50vw"]} height={["6vh", "6vh", "5vh", "5vh"]}>
       <Combobox
         value={value}
         onChange={handleChange}

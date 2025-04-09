@@ -25,12 +25,15 @@ const HeaderComponent = () => {
 
   return (
     <Block as="nav"
+      position={"sticky"}
+      top={0}
       display="flex"
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
       padding={"1rem 2rem"}
       backgroundColor={theme.colors.primaryA}
+      height={["6vh", "6vh", "7vh", "7vh"]}
       className={css({ borderBottom: `1px solid ${theme.colors.primaryA}` })}
     >
       <Block>

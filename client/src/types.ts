@@ -13,7 +13,10 @@ export interface City {
   coordinates: {
     lat: number;
     lon: number;
-  }
+  },
+  admin1?: string;
+  admin2?: string;
+  timezone?: string;
 }
 
 export type CityRowData = [

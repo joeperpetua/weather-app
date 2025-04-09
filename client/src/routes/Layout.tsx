@@ -9,7 +9,8 @@ const Layout = () => {
     <Block
       display="flex"
       flexDirection="column"
-      
+      justifyContent={"space-between"}
+      minHeight={"100vh"}
       height="100%"
     >
       <HeaderComponent />
