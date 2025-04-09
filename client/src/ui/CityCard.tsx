@@ -5,6 +5,8 @@ import WeatherIcon from "./WeatherIcon";
 import { ParagraphLarge } from "baseui/typography";
 import { useStyletron } from "baseui";
 import { Block } from "baseui/block";
+import { Link } from "react-router";
+import { cityURL } from "../encode";
 
 interface CityCardProps {
   city: City;
@@ -16,7 +18,7 @@ const hasThumbnail = (_props: { readonly thumbnail?: string | undefined; }) => t
 
 const CityCard: React.FC<CityCardProps> = ({ city }) => {
   const [css] = useStyletron();
-  
+
   // Fetch current weather for city
 
   return (
@@ -26,20 +28,20 @@ const CityCard: React.FC<CityCardProps> = ({ city }) => {
         title={`${city.cityName}, ${city.countryCode}`}
         hasThumbnail={hasThumbnail}
       >
-        <Block 
-          display={"flex"} 
-          alignItems={"center"} 
-          justifyContent={"space-between"} 
-          marginBottom={"2rem"} 
+        <Block
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          marginBottom={"2rem"}
         >
           <Block display={"flex"} flexDirection={"column"} justifyContent={"center"}>
             <Block display={"flex"} gridGap={"0.5rem"}>
-              <WeatherIcon weatherCode={999} size={24} />
+              <WeatherIcon weatherCode={999} size={2} />
               <ParagraphLarge margin={0}>15.2 °C</ParagraphLarge>
             </Block>
 
             <Block display={"flex"} gridGap={"0.5rem"}>
-              <WeatherIcon weatherCode={998} size={24} />
+              <WeatherIcon weatherCode={998} size={2} />
               <ParagraphLarge margin={0}>1%</ParagraphLarge>
             </Block>
           </Block>
@@ -47,9 +49,11 @@ const CityCard: React.FC<CityCardProps> = ({ city }) => {
 
         </Block>
         <Block marginLeft={["0", "0", "25%", "25%"]} width={["100%", "100%", "50%", "50%"]}>
-          <Button className={css({ width: "100%" })}>
-            See forecast
-          </Button>
+          <Link to={cityURL(city)}>
+            <Button className={css({ width: "100%" })}>
+              See forecast
+            </Button>
+          </Link>
         </Block>
       </Card>
     </Block>

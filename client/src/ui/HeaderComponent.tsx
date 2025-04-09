@@ -1,64 +1,60 @@
-import {
-  HeaderNavigation,
-  ALIGN,
-  StyledNavigationItem,
-  StyledNavigationList
-} from "baseui/header-navigation";
-import { StyledLink } from "baseui/link";
-import { FaGear } from "react-icons/fa6";
-import { FaGithub } from "react-icons/fa";
 import { useStyletron } from "baseui";
 import { HeadingMedium } from "baseui/typography";
 import { Block } from "baseui/block";
 import logo from '../assets/logo.png';
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import { GiHamburgerMenu } from "react-icons/gi";
+import CitySearchBar from "./CitySearchBar";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { useEffect } from "react";
+import { fetchCities } from "../features/citiesSlice";
+import ErrorSnackbar from "./Snackbar/Error";
+import { useSnackbar } from "baseui/snackbar";
 
 const HeaderComponent = () => {
   const [css, theme] = useStyletron();
+  const { cities } = useSelector((state: RootState) => state.cities);
+  const dispatch = useDispatch<AppDispatch>();
+  const { enqueue, dequeue } = useSnackbar();
+  const location = useLocation();
+
+  useEffect(() => {
+    dispatch(fetchCities()).unwrap().catch(error => ErrorSnackbar('Failed to fetch cities', error, enqueue, dequeue));
+  }, []);
 
   return (
-    <HeaderNavigation
-      overrides={{
-        Root: {
-          style: () => ({
-            padding: "1rem 2rem"
-          })
-        }
-      }}
+    <Block as="nav"
+      display="flex"
+      flexDirection="row"
+      justifyContent="space-between"
+      alignItems="center"
+      padding={"1rem 2rem"}
+      backgroundColor={theme.colors.primaryA}
+      className={css({ borderBottom: `1px solid ${theme.colors.primaryA}` })}
     >
-      <StyledNavigationList $align={ALIGN.left}>
-        <StyledNavigationItem>
-          <Link to='/' className={css({ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            gap: '0.5rem', 
-            paddingLeft: '0', 
-            textDecoration: 'none' 
-          })}>
-            <Block as="img" src={logo} />
-            <HeadingMedium margin={0}>WeatherApp</HeadingMedium>
-          </Link>
-        </StyledNavigationItem>
-      </StyledNavigationList>
+      <Block>
+        <Link to='/' className={css({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '0.5rem',
+          paddingLeft: '0',
+          textDecoration: 'none'
+        })}>
+          <Block as="img" src={logo} />
+          <HeadingMedium margin={0} color={theme.colors.backgroundSecondary}>WeatherApp</HeadingMedium>
+        </Link>
+      </Block>
 
-      <StyledNavigationList $align={ALIGN.center} />
+      <Block display={["none", "none", `${location.pathname === '/' ? "none" : "flex"}`, `${location.pathname === '/' ? "none" : "flex"}`]}>
+        <CitySearchBar cities={cities} />
+      </Block>
 
-      <StyledNavigationList $align={ALIGN.right}>
-        <StyledNavigationItem>
-          <StyledLink href="https://github.com/joeperpetua/weather-app" className={css({ display: 'flex' })}>
-            <FaGithub size={26} color={theme.colors.contentPrimary} />
-          </StyledLink>
-        </StyledNavigationItem>
-
-        <StyledNavigationItem>
-          <Block display='flex' className={css({ cursor: 'pointer' })} >
-            <FaGear size={26} color={theme.colors.contentPrimary} />
-          </Block>
-        </StyledNavigationItem>
-
-      </StyledNavigationList>
-    </HeaderNavigation >
+      <Block display='flex' className={css({ cursor: 'pointer' })} >
+        <GiHamburgerMenu size={26} color={theme.colors.backgroundSecondary} />
+      </Block>
+    </Block>
   );
 }
 

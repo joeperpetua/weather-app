@@ -1,11 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { useStyletron } from 'baseui';
 import { Combobox } from 'baseui/combobox';
 import { City } from '../types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdSearch } from 'react-icons/md';
 import { Block } from 'baseui/block';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import { cityURL } from '../encode';
 
 interface OptionT {
   label: string;
@@ -15,7 +16,7 @@ interface OptionT {
 const cityOptions = (cities: City[]): OptionT[] => {
   const cityOptions = cities.map((city) => ({
     label: `${city.cityName}, ${city.country}`,
-    id: `${city.countryCode.toLowerCase()}/${city.cityName.toLowerCase()}/${city.id}`
+    id: cityURL(city),
   }))
 
   return cityOptions;
@@ -31,7 +32,7 @@ const ReplacementNode = ({ option }: { option: OptionT }) => {
 
   return (
     <Block height="100%" width={"100%"} display="flex" alignItems="center" className={css({ cursor: 'pointer' })}
-      onClick={() => navigate(encodeURI(`/city/${option.id}`))}
+      onClick={() => navigate(option.id)}
     >
       {option.label}
     </Block>
@@ -47,12 +48,13 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
   const [value, setValue] = useState('');
   const [options, setOptions] = useState<OptionT[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navigateToCity = () => {
     const cityOption = cityOptions(cities).find(city => city.label === value);
     if (!cityOption) return;
 
-    navigate(encodeURI(`/city/${cityOption.id}`));
+    navigate(cityOption.id);
   }
 
   function cityLookup(searchTerm: string) {
@@ -69,6 +71,10 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
     setValue(nextValue);
     cityLookup(nextValue);
   }
+
+  useEffect(() => {
+    setValue('');
+  }, [location]);
 
   return (
     <Block width={["80vw", "80vw", "50vw", "50vw"]} height={["6vh", "6vh", "7vh", "7vh"]}>
@@ -106,8 +112,8 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
               overrides: {
                 Root: {
                   style: () => ({
-                    borderRadius: "10rem",
-                    outline: `${theme.colors.primary} solid`,
+                    borderRadius: "0rem",
+                    outline: `${theme.colors.primaryA} solid`,
                     border: `none`,
                     height: "100%",
                   })
