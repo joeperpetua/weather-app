@@ -1,4 +1,4 @@
-import sunny from "../assets/weather_icons/sunny.png";
+import clearSky from "../assets/weather_icons/clear-sky.png";
 import partlyCloudy from "../assets/weather_icons/partly-cloudy.png";
 import clouds from "../assets/weather_icons/clouds.png";
 import cloudLightning from "../assets/weather_icons/cloud-lightning.png";
@@ -9,30 +9,53 @@ import temperature from "../assets/weather_icons/temperature.png";
 import { Block } from "baseui/block";
 // import wind from "../assets/weather_icons/wind.png";
 import wet from "../assets/weather_icons/wet.png";
+import waterDrop from "../assets/weather_icons/water-drop.png";
 
 export const iconsMap: { [key: number]: string } = {
-  0: sunny,
-  1: partlyCloudy,
-  2: clouds,
-  3: cloudLightning,
-  45: rain,
-  48: rainCloud,
-  51: rain,
-  53: rain,
-  55: rain,
-  56: rainCloud,
-  57: rainCloud,
-  61: rain,
-  63: rain,
-  65: rain,
-  66: rainCloud,
-  67: rainCloud,
-  71: snow,
-  73: snow,
-  75: snow,
+  0: clearSky,
+  1: partlyCloudy,   // mainly clear
+  2: clouds,         // partly cloudy
+  3: clouds,         // overcast
+  45: rain,          // fog (can change to fog icon if available)
+  48: rainCloud,     // rime fog (could use a fog icon too)
+
+  51: rain,          // light drizzle
+  53: rain,          // moderate drizzle
+  55: rain,          // dense drizzle
+
+  56: rainCloud,     // light freezing drizzle
+  57: rainCloud,     // dense freezing drizzle
+
+  61: rain,          // slight rain
+  63: rain,          // moderate rain
+  65: rain,          // heavy rain
+
+  66: rainCloud,     // light freezing rain
+  67: rainCloud,     // heavy freezing rain
+
+  71: snow,          // slight snowfall
+  73: snow,          // moderate snowfall
+  75: snow,          // heavy snowfall
+
+  77: snow,          // snow grains
+
+  80: rain,          // slight rain showers
+  81: rain,          // moderate rain showers
+  82: rain,          // violent rain showers
+
+  85: snow,          // slight snow showers
+  86: snow,          // heavy snow showers
+
+  95: cloudLightning, // thunderstorm
+  96: cloudLightning, // thunderstorm with slight hail
+  99: cloudLightning, // thunderstorm with heavy hail
+
+  // Custom icons
+  997: waterDrop,
   998: wet,
   999: temperature
 };
+
 
 
 interface WeatherIconProps {
@@ -40,8 +63,8 @@ interface WeatherIconProps {
   size?: number
 }
 
-const WeatherIcon: React.FC<WeatherIconProps> = ({ weatherCode, size = 48 }) => {
-  return <Block as="img" src={iconsMap[weatherCode]} width={`${size}px`} height={`${size}px`} alt={`${weatherCode}`} />
+const WeatherIcon: React.FC<WeatherIconProps> = ({ weatherCode, size = 3.5 }) => {
+  return <Block as="img" src={iconsMap[weatherCode]} width={`${size}rem`} height={`${size}rem`} alt={`${weatherCode}`} />
 }
 
 export default WeatherIcon;
