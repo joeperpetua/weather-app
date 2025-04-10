@@ -77,7 +77,7 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
   }, [location]);
 
   return (
-    <Block width={["80vw", "80vw", "50vw", "50vw"]} height={["6vh", "6vh", "5vh", "5vh"]}>
+    <Block width={["80vw", "80vw", "50vw", "50vw"]} height={["6vh", "6vh", "6vh", "6vh"]}>
       <Combobox
         value={value}
         onChange={handleChange}

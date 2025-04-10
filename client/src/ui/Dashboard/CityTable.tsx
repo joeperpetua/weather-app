@@ -21,22 +21,34 @@ const columns = [
     mapDataToValue: (data: CityRowData) => data[1],
   }),
   StringColumn({
-    title: "Country",
+    title: "Admin Zone 1",
     mapDataToValue: (data: CityRowData) => data[2],
   }),
   StringColumn({
-    title: "Country Name",
+    title: "Admin Zone 2",
     mapDataToValue: (data: CityRowData) => data[3],
+  }),
+  StringColumn({
+    title: "Country",
+    mapDataToValue: (data: CityRowData) => data[4],
+  }),
+  StringColumn({
+    title: "Country Name",
+    mapDataToValue: (data: CityRowData) => data[5],
   }),
   NumericalColumn({
     title: "Latitude",
     precision: 5,
-    mapDataToValue: (data: CityRowData) => data[4],
+    mapDataToValue: (data: CityRowData) => data[6],
   }),
   NumericalColumn({
     title: "Longitude",
     precision: 5,
-    mapDataToValue: (data: CityRowData) => data[5],
+    mapDataToValue: (data: CityRowData) => data[7],
+  }),
+  StringColumn({
+    title: "Timezone",
+    mapDataToValue: (data: CityRowData) => data[8],
   }),
 ];
 
@@ -49,10 +61,13 @@ const genRows = (data: City[]) => {
       data: [
         city.id,
         city.cityName,
+        city.adminZone1,
+        city.adminZone2,
         city.country,
         city.countryCode,
         city.coordinates.lat,
-        city.coordinates.lon
+        city.coordinates.lon,
+        city.timezone
       ]
     });
   });
@@ -84,7 +99,7 @@ const CityTable: React.FC<CityTableProps> = ({ editHandler, deleteHandler }) => 
   ];
 
   return (
-    <Block height="100%">
+    <Block height="70vh">
       <StatefulDataTable 
         columns={columns} 
         rows={rows} 

@@ -35,16 +35,14 @@ const DashboardEdit = () => {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, parsedCity: City) => {
-    e.preventDefault();
-
+  const handleSubmit = async (parsedCity: City) => {
     dispatch(updateCity({ id: city.id!, city: parsedCity, token })).unwrap().then(() => {
       SuccessSnackbar("City edited successfully", "Back to dashboard", enqueue, () => navigate("/dashboard"));
     }).catch(error => ErrorSnackbar("Failed to edit city", error, enqueue, dequeue));
   }
   
   return (
-    <Block display="flex" flexDirection="column" height="100%" padding={"0 2rem"}>
+    <Block display="flex" flexDirection="column" height="100%" padding={"0 2rem 4rem 2rem"}>
       <DashboardHeading text="Edit city" link="/dashboard" />
       <CityForm data={city} action={handleSubmit} />
     </Block>

@@ -12,7 +12,7 @@ const DashboardLayout = () => {
     <Block
       display="flex"
       flexDirection="column"
-      height={"95vh"}
+      height={"100%"}
     >
       <RouteGuard>
         <HeaderComponent />
