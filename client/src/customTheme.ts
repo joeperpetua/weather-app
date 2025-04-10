@@ -10,8 +10,9 @@ const colorOverrides = {
   buttonPrimaryHover: '#056d9c',
   buttonPrimaryActive: '#045c85',
   buttonPrimaryText: '#ffffff',
-  accent: '#6cac8f',
-  linkText: '#6cac8f',
+  accent: '#ed8901',
+  linkText: '#ed8901',
+  linkVisited: '#ed8901'
 };
 
 const typographyOverrides = {
