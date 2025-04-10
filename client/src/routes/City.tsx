@@ -8,7 +8,6 @@ import { useSnackbar } from "baseui/snackbar";
 import { useLocation, useNavigate, useParams } from "react-router";
 import PageSpinner from "../ui/PageSpinner";
 import NotFound from "./NotFound";
-import { cityURL, getLocalTimeTimezone, timezoneToGMT } from "../encode";
 import { HeadingLevel } from "baseui/heading";
 import CityHeader from "../ui/CityRoute/CityHeader";
 import CurrentWeatherCard from "../ui/CityRoute/CurrentWeatherCard";
@@ -16,6 +15,8 @@ import DailyForecastItem from "../ui/CityRoute/DailyForecastItem";
 import DayInformation from "../ui/CityRoute/DayInformation";
 import ForecastCard from "../ui/CityRoute/ForecastCard";
 import HourlyForecastItem from "../ui/CityRoute/HourlyForecastItem";
+import { getLocalTimeTimezone, timezoneToGMT } from "../services/time";
+import { cityURL } from "../services/url";
 
 // 2 day mock hourly
 export const weatherDataHourly = {
@@ -694,6 +695,15 @@ export const weatherDataDaily = {
     165,
     241,
     142
+  ],
+  "relative_humidity_2m_max": [
+    88,
+    83,
+    86,
+    79,
+    96,
+    97,
+    100
   ]
 }
 
@@ -783,6 +793,9 @@ const CityRoute = () => {
                 temperature={weatherDataHourly.temperature_2m[currentHour + index]}
                 weatherCode={weatherDataHourly.weather_code[currentHour + index]}
                 precipitationProbability={weatherDataHourly.precipitation_probability[currentHour + index]}
+                windSpeed={weatherDataHourly.wind_speed_10m[currentHour + index]}
+                windDirection={weatherDataHourly.wind_direction_10m[currentHour + index]}
+                uvIndex={weatherDataHourly.uv_index[currentHour + index]}
               />
             ))}
           </Block>
@@ -799,6 +812,10 @@ const CityRoute = () => {
                 temperatureMin={weatherDataDaily.temperature_2m_min[index]}
                 weatherCode={weatherDataDaily.weather_code[index]}
                 precipitationProbability={weatherDataDaily.precipitation_probability_max[index]}
+                windSpeed={weatherDataDaily.wind_speed_10m_max[index]}
+                windDirection={weatherDataDaily.wind_direction_10m_dominant[index]}
+                humidity={weatherDataDaily.relative_humidity_2m_max[index]}
+                uvIndex={weatherDataDaily.uv_index_max[index]}
               />
             ))}
           </Block>

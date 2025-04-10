@@ -6,7 +6,7 @@ import { ParagraphLarge } from "baseui/typography";
 import { useStyletron } from "baseui";
 import { Block } from "baseui/block";
 import { Link } from "react-router";
-import { cityURL } from "../encode";
+import { cityURL } from "../services/url";
 
 interface CityCardProps {
   city: City;

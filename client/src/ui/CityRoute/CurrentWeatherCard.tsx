@@ -3,9 +3,10 @@ import { Block } from "baseui/block";
 import { DisplayLarge } from "baseui/typography";
 import HeadingWeightless from "../HeadingWeightless";
 import WeatherIcon from "../WeatherIcon";
-import { getLocalTimeTimezone, getWeatherDescription, timezoneToGMT } from "../../encode";
 import WeatherDataCard from "./WeatherDataCard";
 import DayInformation from "./DayInformation";
+import { timezoneToGMT, getLocalTimeTimezone } from "../../services/time";
+import { getWeatherDescription } from "../../services/weather";
 
 interface ContentProps {
   temperature: number;

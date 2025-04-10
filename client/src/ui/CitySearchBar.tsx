@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { MdSearch } from 'react-icons/md';
 import { Block } from 'baseui/block';
 import { useLocation, useNavigate } from 'react-router';
-import { cityURL } from '../encode';
+import { cityURL } from '../services/url';
 
 interface OptionT {
   label: string;
