@@ -8,6 +8,10 @@ interface CityHeaderProps {
 }
 
 const CityHeader: React.FC<CityHeaderProps> = ({ city }) => {
+  const subtitle = city.adminZone1 != city.adminZone2 && city.adminZone2 ? 
+    `${city.adminZone1}, ${city.adminZone2}, ${city.country}`
+    : `${city.adminZone1}, ${city.country}`;
+  
   return (
     <Block>
       <Block display={"flex"} alignItems={"center"} gridGap={"1rem"}>
@@ -15,7 +19,7 @@ const CityHeader: React.FC<CityHeaderProps> = ({ city }) => {
         <MdStarBorder size={34} />
       </Block>
       <Block>
-        <HeadingWeightless styleLevel={5} margin={0}>{city.admin1}, {city.country}</HeadingWeightless>
+        <HeadingWeightless styleLevel={5} margin={0}>{subtitle}</HeadingWeightless>
       </Block>
     </Block>
   );

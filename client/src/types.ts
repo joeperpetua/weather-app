@@ -1,3 +1,5 @@
+// API Related types
+
 export interface APIError {
   type: string;
   status: number;
@@ -14,18 +16,70 @@ export interface City {
     lat: number;
     lon: number;
   },
-  admin1?: string;
-  admin2?: string;
-  timezone?: string;
+  adminZone1?: string;
+  adminZone2?: string;
+  timezone: string;
 }
 
+export interface GeocodingData {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  elevation: number;
+  feature_code: string;
+  country_code: string;
+  admin1_id: number;
+  admin2_id: number;
+  admin3_id: number;
+  admin4_id: number;
+  timezone: string;
+  country_id: number;
+  country: string;
+  admin1: string;
+  admin2: string;
+  admin3: string;
+  admin4: string;
+}
+
+export interface DailyForecast {
+  date: string[];
+  precipitationProbability: number[];
+  relativeHumidity: number[];
+  temperatureMax: number[];
+  temperatureMin: number[];
+  uvIndex: number[];
+  weatherCode: number[];
+  windDirection: number[];
+  windSpeed: number[];
+}
+
+export interface HourlyForecast {
+  date: string[];
+  precipitation: number[];
+  precipitationProbability: number[];
+  relativeHumidity: number[];
+  temperature: number[];
+  uvIndex: number[];
+  weatherCode: number[];
+  windDirection: number[];
+  windGust: number[];
+  windSpeed: number[];
+  apparentTemperature: number[];
+  aqi: number[];
+}
+
+// Internal types
 export type CityRowData = [
   number,
   string,
   string,
   string,
+  string,
+  string,
   number,
-  number
+  number,
+  string
 ];
 
 export interface UVAQILevel {

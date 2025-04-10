@@ -1,15 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { City } from "../types";
+import { City, DailyForecast, HourlyForecast } from "../types";
 import { throwOnAPIError, unknownToError } from "../error";
 import { store } from "../store";
 
+interface DailyForecastState {
+  id: number;
+  forecast: DailyForecast;
+}
+
+interface HourlyForecastState {
+  id: number;
+  forecast: HourlyForecast;
+}
+
 interface CitiesState {
   cities: City[];
+  dailyForecasts: DailyForecastState[];
+  hourlyForecasts: HourlyForecastState[];
   loading: boolean;
 }
 
 const initialState: CitiesState = {
   cities: [],
+  dailyForecasts: [],
+  hourlyForecasts: [],
   loading: false,
 };
 
@@ -107,7 +121,46 @@ export const deleteCity = createAsyncThunk(
   }
 );
 
-// Redux slice
+export const fetchDailyForecast = createAsyncThunk(
+  'cities/fetchDailyForecast',
+  async (args: { id: number, units: 'metric' | 'imperial' }, { rejectWithValue }) => {
+    try {
+      const cityForecast = selectDailyForecastById(store.getState().cities, args.id);
+      if (cityForecast) {
+        return cityForecast;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/forecast/${args.id}/daily?days=7&units=${args.units}`);
+      await throwOnAPIError('Daily forecast fetch', response);
+      const forecast = await response.json() as DailyForecast;
+      return { id: args.id, forecast };
+    } catch (error) {
+      const parsed = unknownToError('Daily forecast fetch', error);
+      return rejectWithValue(parsed.error.message);
+    }
+  }
+);
+
+export const fetchHourlyForecast = createAsyncThunk(
+  'cities/fetchHourlyForecast',
+  async (args: { id: number, units: 'metric' | 'imperial' }, { rejectWithValue }) => {
+    try {
+      const cityForecast = selectHourlyForecastById(store.getState().cities, args.id);
+      if (cityForecast) {
+        return cityForecast;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/forecast/${args.id}/hourly?days=2&units=${args.units}`);
+      await throwOnAPIError('Hourly forecast fetch', response);
+      const forecast = await response.json() as HourlyForecast;
+      return { id: args.id, forecast };
+    } catch (error) {
+      const parsed = unknownToError('Daily forecast fetch', error);
+      return rejectWithValue(parsed.error.message);
+    }
+  }
+);
+
 const citiesSlice = createSlice({
   name: "cities",
   initialState,
@@ -165,6 +218,42 @@ const citiesSlice = createSlice({
       .addCase(deleteCity.fulfilled, (state, action) => {
         state.loading = false;
         state.cities = state.cities.filter(city => city.id !== action.payload);
+      })
+
+      // Fetch daily forecast cases
+      .addCase(fetchDailyForecast.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchDailyForecast.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDailyForecast.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.dailyForecasts.findIndex(forecast => forecast.id === action.payload.id);
+
+        if (index > -1) {
+          state.dailyForecasts[index] = action.payload;
+        } else {
+          state.dailyForecasts.push(action.payload);
+        }
+      })
+
+      // Fetch hourly forecast cases
+      .addCase(fetchHourlyForecast.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchHourlyForecast.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchHourlyForecast.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.hourlyForecasts.findIndex(forecast => forecast.id === action.payload.id);
+
+        if (index > -1) {
+          state.hourlyForecasts[index] = action.payload;
+        } else {
+          state.hourlyForecasts.push(action.payload);
+        }
       });
   },
 });
@@ -173,4 +262,6 @@ const citiesSlice = createSlice({
 // export const { setCities } = citiesSlice.actions;
 export const selectCityByName = (state: CitiesState, name: string) => state.cities.find(city => city.cityName === name) || null;
 export const selectCityById = (state: CitiesState, id: number) => state.cities.find(city => city.id === id) || null;
+export const selectDailyForecastById = (state: CitiesState, id: number) => state.dailyForecasts.find(forecast => forecast.id === id) || null;
+export const selectHourlyForecastById = (state: CitiesState, id: number) => state.hourlyForecasts.find(forecast => forecast.id === id) || null;
 export default citiesSlice.reducer;

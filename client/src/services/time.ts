@@ -11,6 +11,8 @@ export const timezoneToGMT = (timezone: string) => {
 }
 
 export const getLocalTimeTimezone = (timezone: string, date: Date = new Date()) => {
+  if (!timezone) return {'hour': 0, 'minute': 0};
+  
   // 'en' locale, 'u' extension, 'hc' key for hourCycle, 'h23' value (0-23)
   const formatter = new Intl.DateTimeFormat('en-u-hc-h23', { 
     timeZone: timezone,
