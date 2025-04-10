@@ -7,9 +7,11 @@ import rainCloud from "../assets/weather_icons/rain-cloud.png";
 import snow from "../assets/weather_icons/snow.png";
 import temperature from "../assets/weather_icons/temperature.png";
 import { Block } from "baseui/block";
-// import wind from "../assets/weather_icons/wind.png";
+import wind from "../assets/weather_icons/wind.png";
 import wet from "../assets/weather_icons/wet.png";
 import waterDrop from "../assets/weather_icons/water-drop.png";
+import windsock from "../assets/weather_icons/windsock.png";
+import uvIndex from "../assets/weather_icons/uv-index.png";
 
 export const iconsMap: { [key: number]: string } = {
   0: clearSky,
@@ -51,8 +53,11 @@ export const iconsMap: { [key: number]: string } = {
   99: cloudLightning, // thunderstorm with heavy hail
 
   // Custom icons
-  997: waterDrop,
-  998: wet,
+  994: wind,
+  995: windsock,
+  996: uvIndex,
+  997: waterDrop,     // humidity
+  998: wet,           // precipitation chance / precipitation sum 
   999: temperature
 };
 
