@@ -27,3 +27,15 @@ export type CityRowData = [
   number,
   number
 ];
+
+export interface UVAQILevel {
+  min: number;
+  max: number;
+  level: string;
+  color: string;
+};
+
+export interface WMOCodeInfo {
+  code: number;
+  description: string;
+};
