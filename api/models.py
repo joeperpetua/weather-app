@@ -9,11 +9,14 @@ class Admin(db.Model):
 class City(db.Model):
     __tablename__ = "cities"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
     country = db.Column(db.String(80), nullable=False)
     country_code = db.Column(db.String(10), nullable=False)
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
+    timezone = db.Column(db.String(80), nullable=False)
+    admin_zone_1 = db.Column(db.String(80), nullable=True)
+    admin_zone_2 = db.Column(db.String(80), nullable=True)
 
     def to_dict(self):
         return {
@@ -24,7 +27,10 @@ class City(db.Model):
             'coordinates': {
                 'lat': self.lat,
                 'lon': self.lon
-            }
+            },
+            'timezone': self.timezone,
+            'adminZone1': self.admin_zone_1,
+            'adminZone2': self.admin_zone_2
         }
 
 def auto_create_admin():
