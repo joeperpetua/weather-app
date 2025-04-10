@@ -26,7 +26,9 @@ ENV = {
     'ADMIN_NAME': os.getenv('ADMIN_NAME'),
     'ADMIN_PASS': os.getenv('ADMIN_PASS'),
     'JWT_ISSUER': os.getenv('JWT_ISSUER'),
-    'JWT_PRIVATE_KEY': os.getenv('JWT_PRIVATE_KEY')
+    'JWT_PRIVATE_KEY': os.getenv('JWT_PRIVATE_KEY'),
+    'OPEN_METEO_API_BASE': os.getenv('OPEN_METEO_API_BASE'),
+    'OPEN_METEO_API_AQI': os.getenv('OPEN_METEO_API_AQI'),
 }
 
 DB_URL = URL.create(
