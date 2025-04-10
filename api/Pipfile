@@ -49,6 +49,11 @@ uvicorn = "*"
 watchfiles = "*"
 websockets = "*"
 werkzeug = "*"
+openmeteo-requests = "*"
+requests-cache = "*"
+retry-requests = "*"
+pandas = "*"
+numpy = "*"
 
 [dev-packages]
 

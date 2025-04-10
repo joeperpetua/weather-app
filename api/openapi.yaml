@@ -22,7 +22,7 @@ tags:
 paths:
   /cities:
     get:
-      operationId: endpoints.get_cities
+      operationId: endpoints.city.get_cities
       summary: Get cities.
       description: Returns a list of cities.
       tags: 
@@ -51,7 +51,7 @@ paths:
 
   /forecast/{cityId}/daily:
     get:
-      operationId: endpoints.get_forecast_daily
+      operationId: endpoints.weather.get_forecast_daily
       summary: Get city daily forecasts.
       description: Get daily forecast for a city over a given ammount of days.
       tags: 
@@ -74,7 +74,7 @@ paths:
 
   /forecast/{cityId}/hourly:
     get:
-      operationId: endpoints.get_forecast_hourly
+      operationId: endpoints.weather.get_forecast_hourly
       summary: Get city hourly forecasts.
       description: Get hourly forecast for a city over a given ammount of days.
       tags: 
@@ -98,7 +98,7 @@ paths:
 
   /historical/{cityId}:
     get:
-      operationId: endpoints.get_historical
+      operationId: endpoints.weather.get_historical
       summary: Get city historical data.
       description: Get historical weather data for a city over a given date range in a hourly fashion.
       tags: 
@@ -133,7 +133,7 @@ paths:
 
   /admin/login:
     post:
-      operationId: endpoints.admin_login
+      operationId: endpoints.admin.login
       summary: Login.
       description: Login to the admin panel. Authentication through HTTP Basic Auth ().
       security:
@@ -162,7 +162,7 @@ paths:
 
   /cities/add:
     post:
-      operationId: endpoints.post_city_add
+      operationId: endpoints.city.post_city_add
       summary: Add city.
       description: Add a new city to the database. Authentication through HTTP Bearer token (JWT).
       security:
@@ -191,7 +191,7 @@ paths:
   
   /city/{cityId}/edit:
     put:
-      operationId: endpoints.put_city_edit
+      operationId: endpoints.city.put_city_edit
       summary: Edit city.
       description: Edit a city in the database. Whole object will be overwritten with the provided data.
       security:
@@ -221,7 +221,7 @@ paths:
 
   /city/{cityId}/delete:
     delete:
-      operationId: endpoints.delete_city
+      operationId: endpoints.city.delete_city
       summary: Delete city.
       description: Delete a city from the database.
       security:
@@ -354,11 +354,17 @@ components:
         - country
         - countryCode
         - coordinates
+        - timezone
+        - adminZone1
+        - adminZone2
       example:
-        cityName: "vienna"
-        country: "austria"
+        cityName: "Vienna"
+        country: "Austria"
         countryCode: "AT"
         coordinates: { lat: 48.210033, lon: 16.363449 }
+        timezone: "Europe/Vienna"
+        adminZone1: "Vienna"
+        adminZone2: ""
       properties:
         cityName:
           type: string
@@ -379,6 +385,15 @@ components:
             lon:
               type: number
               description: Longitude.
+        timezone:
+          type: string
+          description: City timezone.
+        adminZone1:
+          type: string
+          description: Main administration zone, usually a province, state or region.
+        adminZone2:
+          type: string
+          description: Secondary administration zone.
 
     CityReturn:
       type: object
@@ -389,12 +404,18 @@ components:
         - country
         - countryCode
         - coordinates
+        - timezone
+        - adminZone1
+        - adminZone2
       example:
         id: 23
-        cityName: "vienna"
-        country: "austria"
+        cityName: "Vienna"
+        country: "Austria"
         countryCode: "AT"
         coordinates: { lat: 48.210033, lon: 16.363449 }
+        timezone: "Europe/Vienna"
+        adminZone1: "Vienna"
+        adminZone2: ""
       properties:
         id:
           type: integer
@@ -418,6 +439,15 @@ components:
             lon:
               type: number
               description: Longitude.
+        timezone:
+          type: string
+          description: City timezone.
+        adminZone1:
+          type: string
+          description: Main administration zone, usually a province, state or region.
+        adminZone2:
+          type: string
+          description: Secondary administration zone.
     
     ForecastDaily:
       type: object
@@ -428,12 +458,20 @@ components:
         - temperatureMin
         - temperatureMax
         - precipitationChance
+        - uvIndex
+        - windSpeed
+        - windDirection
+        - relativeHumidity
       example:
-        day: ["2023-01-01", "2023-01-02", "2023-01-03"]
+        date: ["2023-01-01", "2023-01-02", "2023-01-03"]
         weatherCode: [0, 3, 3]
         temperatureMin: [10, 20, 30]
         temperatureMax: [20, 30, 40]
         precipitationChance: [10, 20, 30]
+        uvIndex: [10, 20, 30]
+        windSpeed: [10, 20, 30]
+        windDirection: [10, 20, 30]
+        relativeHumidity: [10, 20, 30]
       properties:
         day:
           description: List of forecast dates. ISO8601 format.
@@ -469,47 +507,91 @@ components:
             type: number
             minimum: 0
             maximum: 100
+        uvIndex:
+          type: array
+          description: UV index for each day.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
+        windSpeed:
+          type: array
+          description: Wind speed for each day.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
+        windDirection:
+          type: array
+          description: Wind direction for each day.
+          items:
+            type: number
+            minimum: 0
+            maximum: 360
+        relativeHumidity:
+          type: array
+          description: Relative humidity for each day.
+          items:
+            type: number
+            minimum: 0
+            maximum: 100
 
     ForecastHourly:
       type: object
       description: A weather forecast containing hourly weather data.
       required:
-        - hour
+        - date
         - weatherCode
         - temperature
+        - apparentTemperature
+        - relativeHumidity
         - precipitationChance
+        - precipitation
+        - windSpeed
+        - windDirection
+        - windGust
+        - uvIndex
+        - aqi
       example:
-        hour: [
-          "2025-04-03T00:00",
-          "2025-04-03T01:00",
-          "2025-04-03T02:00",
-          "2025-04-03T03:00",
-          "2025-04-03T04:00",
-          "2025-04-03T05:00",
-          "2025-04-03T06:00",
-          "2025-04-03T07:00",
-          "2025-04-03T08:00",
-          "2025-04-03T09:00",
-          "2025-04-03T10:00",
-          "2025-04-03T11:00",
-          "2025-04-03T12:00",
-          "2025-04-03T13:00",
-          "2025-04-03T14:00",
-          "2025-04-03T15:00",
-          "2025-04-03T16:00",
-          "2025-04-03T17:00",
-          "2025-04-03T18:00",
-          "2025-04-03T19:00",
-          "2025-04-03T20:00",
-          "2025-04-03T21:00",
-          "2025-04-03T22:00",
-          "2025-04-03T23:00"
+        date: [
+          "2025-04-10T00:00",
+          "2025-04-10T01:00",
+          "2025-04-10T02:00",
+          "2025-04-10T03:00",
+          "2025-04-10T04:00",
+          "2025-04-10T05:00",
+          "2025-04-10T06:00",
+          "2025-04-10T07:00",
+          "2025-04-10T08:00",
+          "2025-04-10T09:00",
+          "2025-04-10T10:00",
+          "2025-04-10T11:00",
+          "2025-04-10T12:00",
+          "2025-04-10T13:00",
+          "2025-04-10T14:00",
+          "2025-04-10T15:00",
+          "2025-04-10T16:00",
+          "2025-04-10T17:00",
+          "2025-04-10T18:00",
+          "2025-04-10T19:00",
+          "2025-04-10T20:00",
+          "2025-04-10T21:00",
+          "2025-04-10T22:00",
+          "2025-04-10T23:00"
         ]
-        weather_code: [1, 0, 3, 2, 0, 1, 1, 2, 3, 0, 2, 1, 3, 3, 0, 2, 1, 0, 2, 3, 1, 0, 2, 3]
+        weatherCode: [1, 0, 3, 2, 0, 1, 1, 2, 3, 0, 2, 1, 3, 3, 0, 2, 1, 0, 2, 3, 1, 0, 2, 3]
         temperature: [10, 7, 14, 5, 11, 9, 6, 13, 8, 12, 5, 10, 7, 14, 6, 9, 11, 13, 8, 5, 12, 10, 7, 14]
-        precipitation_chance: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 25, 22, 8, 10, 5, 0, 0, 0, 0, 0]
+        apparentTemperature: [10, 7, 14, 5, 11, 9, 6, 13, 8, 12, 5, 10, 7, 14, 6, 9, 11, 13, 8, 5, 12, 10, 7, 14]
+        relativeHumidity: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        precipitationProbability: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 25, 22, 8, 10, 5, 0, 0, 0, 0, 0]
+        precipitation: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+        windSpeed: [5, 7, 9, 12, 14, 15, 16, 18, 20, 22, 23, 24, 26, 28, 30, 32, 34, 35, 36, 38, 40, 42, 44, 46]
+        windDirection: [45, 90, 135, 180, 225, 270, 315, 360, 45, 90, 135, 180, 225, 270, 315, 360, 45, 90, 135, 180, 225, 270, 315, 360]
+        windGust: [5, 7, 9, 12, 14, 15, 16, 18, 20, 22, 23, 24, 26, 28, 30, 32, 34, 35, 36, 38, 40, 42, 44, 46]
+        uvIndex: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7]
+        aqi: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145]
       properties:
-        hour:
+        date:
           description: Date and hour for each forecast. ISO8601 format.
           type: array
           items:
@@ -529,13 +611,69 @@ components:
             type: number
             minimum: -80
             maximum: 140
-        precipitationChance:
+        apparentTemperature:
           type: array
-          description: Median chance of precipitation for each hour (percentage).
+          description: Apparent temperature for each hour.
+          items:
+            type: number
+            minimum: -80
+            maximum: 140
+        relativeHumidity:
+          type: array
+          description: Relative humidity for each hour (percentage).
           items:
             type: number
             minimum: 0
             maximum: 100
+        precipitationProbability:
+          type: array
+          description: Max probability of precipitation for each hour (percentage).
+          items:
+            type: number
+            minimum: 0
+            maximum: 100
+        precipitation:
+          type: array
+          description: Precipitation for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
+        windSpeed:
+          type: array
+          description: Wind speed for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
+        windDirection:
+          type: array
+          description: Wind direction for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 360
+        windGust:
+          type: array
+          description: Wind gust for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
+        uvIndex:
+          type: array
+          description: UV index for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
+        aqi:
+          type: array
+          description: Air quality index for each hour.
+          items:
+            type: number
+            minimum: 0
+            maximum: 999
 
     HistoricalHourly:
       type: object
