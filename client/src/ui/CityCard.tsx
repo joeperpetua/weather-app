@@ -1,12 +1,19 @@
-import { Button } from "baseui/button";
+
 import { City } from "../types";
-import { Card } from 'baseui/card'
-import WeatherIcon from "./WeatherIcon";
-import { ParagraphLarge } from "baseui/typography";
+import { HeadingMedium } from "baseui/typography";
 import { useStyletron } from "baseui";
 import { Block } from "baseui/block";
 import { Link } from "react-router";
 import { cityURL } from "../services/url";
+import { AppDispatch, RootState } from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchDailyForecast, fetchHourlyForecast, selectDailyForecastById, selectHourlyForecastById } from "../features/citiesSlice";
+import ErrorSnackbar from "./Snackbar/Error";
+import { useSnackbar } from "baseui/snackbar";
+import { getLocalTimeTimezone } from "../services/time";
+import PageSpinner from "./PageSpinner";
+import { Content } from "./CityRoute/CurrentWeatherCard";
 
 interface CityCardProps {
   city: City;
@@ -14,48 +21,50 @@ interface CityCardProps {
 
 // Define here cause it seems like React doesn't detect the one defined in card.js
 // If not defined, component crashes with `Uncaught TypeError: hasThumbnail2 is not a function`
-const hasThumbnail = (_props: { readonly thumbnail?: string | undefined; }) => true
+// const hasThumbnail = (_props: { readonly thumbnail?: string | undefined; }) => true
 
 const CityCard: React.FC<CityCardProps> = ({ city }) => {
-  const [css] = useStyletron();
+  const [css, theme] = useStyletron();
+  const dispatch = useDispatch<AppDispatch>();
+  const { enqueue, dequeue } = useSnackbar();
+  const { unitSystem } = useSelector((state: RootState) => state.settings);
+  const dailyForecast = useSelector((state: RootState) => selectDailyForecastById(state.cities, Number(city.id) || -1));
+  const hourlyForecast = useSelector((state: RootState) => selectHourlyForecastById(state.cities, Number(city.id) || -1));
+  const currentTime = getLocalTimeTimezone(city.timezone || '');
 
-  // Fetch current weather for city
+  useEffect(() => {
+    dispatch(fetchDailyForecast(
+      { id: Number(city.id) || -1, units: unitSystem }
+    )).unwrap().catch(error => ErrorSnackbar('Failed to fetch daily forecast.', error, enqueue, dequeue));
+
+    dispatch(fetchHourlyForecast(
+      { id: Number(city.id) || -1, units: unitSystem }
+    )).unwrap().catch(error => ErrorSnackbar('Failed to fetch daily forecast.', error, enqueue, dequeue));
+  }, [unitSystem]);
 
   return (
-    <Block width={["100%", "100%", "25vw", "25vw"]}>
-      <Card
-        overrides={{ Root: { style: { width: "100%" } } }}
-        title={`${city.cityName}, ${city.countryCode}`}
-        hasThumbnail={hasThumbnail}
-      >
-        <Block
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-          marginBottom={"2rem"}
-        >
-          <Block display={"flex"} flexDirection={"column"} justifyContent={"center"}>
-            <Block display={"flex"} gridGap={"0.5rem"}>
-              <WeatherIcon weatherCode={999} size={2} />
-              <ParagraphLarge margin={0}>15.2 °C</ParagraphLarge>
+    <Block>
+      {/* Mobile only component */}
+      <Block display={["flex", "flex","flex", "flex"]} flexDirection={"column"} marginTop={"1rem"} minWidth={["100%", "100%", "20vw", "23vw"]}>
+        {(hourlyForecast && dailyForecast) ? (
+          <Link to={cityURL(city)} style={{ textDecoration: 'none' }}>
+            <Block display={"flex"} flexDirection={"column"} backgroundColor={theme.colors.backgroundTertiary} padding={"2rem"} 
+              className={css({ borderRadius: "1rem" })}
+            >
+              <HeadingMedium margin={0}>{`${city.cityName}, ${city.countryCode}`}</HeadingMedium>
+              <Content
+                temperature={hourlyForecast.forecast.temperature[currentTime.hour]}
+                weatherCode={hourlyForecast.forecast.weatherCode[currentTime.hour]}
+                apparentTemperature={hourlyForecast.forecast.apparentTemperature[currentTime.hour]}
+                temperatureMin={dailyForecast.forecast.temperatureMin[0]}
+                temperatureMax={dailyForecast.forecast.temperatureMax[0]}
+              />
             </Block>
-
-            <Block display={"flex"} gridGap={"0.5rem"}>
-              <WeatherIcon weatherCode={998} size={2} />
-              <ParagraphLarge margin={0}>1%</ParagraphLarge>
-            </Block>
-          </Block>
-          <WeatherIcon weatherCode={0} />
-
-        </Block>
-        <Block marginLeft={["0", "0", "25%", "25%"]} width={["100%", "100%", "50%", "50%"]}>
-          <Link to={cityURL(city)}>
-            <Button className={css({ width: "100%" })}>
-              See forecast
-            </Button>
           </Link>
-        </Block>
-      </Card>
+        ) : (
+          <PageSpinner />
+        )}
+      </Block>
     </Block>
   );
 }

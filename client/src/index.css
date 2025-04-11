@@ -23,3 +23,7 @@ body,
 div {
 	box-sizing: border-box;
 }
+
+main {
+	background: linear-gradient(180deg, #ffffff, #ededed)
+}

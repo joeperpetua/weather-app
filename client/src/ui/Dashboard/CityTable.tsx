@@ -99,7 +99,7 @@ const CityTable: React.FC<CityTableProps> = ({ editHandler, deleteHandler }) => 
   ];
 
   return (
-    <Block height="70vh">
+    <Block height="80vh">
       <StatefulDataTable 
         columns={columns} 
         rows={rows} 

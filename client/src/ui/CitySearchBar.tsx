@@ -46,7 +46,6 @@ interface CitySearchBarProps {
 const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
   const [css, theme] = useStyletron();
   const [value, setValue] = useState('');
-  const [options, setOptions] = useState<OptionT[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -57,20 +56,12 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
     navigate(cityOption.id);
   }
 
-  const cityLookup = async (searchTerm: string) => {
-    setTimeout(() => {
-      const options = cityOptions(cities).filter((option) => {
-        const optionAsString = mapOptionToString(option);
-        return optionAsString.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-      setOptions(options);
-    }, 500);
-  }
-
-  const handleChange = async (nextValue: string) => {
-    setValue(nextValue);
-    cityLookup(nextValue);
-  }
+  const filteredOptions = React.useMemo(() => {
+    return cityOptions(cities).filter((cityOption) => {
+      const optionAsString = mapOptionToString(cityOption);
+      return optionAsString.toLowerCase().includes(value.toLowerCase());
+    });
+  }, [cities, value]);
 
   useEffect(() => {
     setValue('');
@@ -80,10 +71,10 @@ const CitySearchBar: React.FC<CitySearchBarProps> = ({ cities }) => {
     <Block width={["80vw", "80vw", "50vw", "50vw"]} height={["6vh", "6vh", "6vh", "6vh"]}>
       <Combobox
         value={value}
-        onChange={handleChange}
+        onChange={setValue}
         mapOptionToString={mapOptionToString}
         mapOptionToNode={ReplacementNode}
-        options={options}
+        options={filteredOptions}
         name="search-cities"
         onSubmit={navigateToCity}
         overrides={{

@@ -13,7 +13,14 @@ const ForecastCard: React.FC<ForecastCardProps> = ({ title, time, children }) =>
   const [css, theme] = useStyletron();
 
   return (
-    <Block display={"flex"} flexDirection={"column"} width={"100%"} marginTop={"5vh"} className={css({ borderRadius: ".755rem", border: `1px solid ${theme.colors.primaryA}` })}>
+    <Block 
+      display={"flex"} 
+      flexDirection={"column"} 
+      width={"100%"} 
+      marginTop={"5vh"} 
+      backgroundColor={theme.colors.backgroundSecondary} 
+      className={css({ borderRadius: ".755rem", border: `1px solid ${theme.colors.primaryA}` })}
+    >
       <Block
         display={"flex"}
         justifyContent={"space-between"}

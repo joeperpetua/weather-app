@@ -14,7 +14,7 @@ const ErrorSnackbar = (
     actionMessage: "Close",
     actionOnClick: () => dequeue(),
     overrides: { Root: { style: { background: "red" } } }
-  }, DURATION.long);
+  }, DURATION.medium);
 };
 
 export default ErrorSnackbar;

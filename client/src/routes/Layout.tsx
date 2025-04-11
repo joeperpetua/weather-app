@@ -14,7 +14,7 @@ const Layout = () => {
       height="100%"
     >
       <HeaderComponent />
-      <Block as="main" height="100%">
+      <Block as="main" height="100%" paddingBottom={"7vh"}>
         <Outlet />
       </Block>
       <FooterComponent />

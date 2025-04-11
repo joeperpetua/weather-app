@@ -18,7 +18,7 @@ const FooterComponent = () => {
       padding="5vh"
       backgroundColor={theme.colors.primaryA}
       justifySelf="end"
-      marginTop={"7vh"}
+      paddingTop={"7vh"}
     >
       <HeadingLevel>
         <Heading color={theme.colors.backgroundSecondary} margin={0}>WeatherApp</Heading>

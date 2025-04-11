@@ -1,5 +1,5 @@
 import { BlockProps, Block } from "baseui/block";
-import { Heading } from "baseui/heading";
+import { Heading, HeadingLevel } from "baseui/heading";
 import { ParagraphLarge } from "baseui/typography";
 import { useStyletron } from "baseui";
 
@@ -14,36 +14,39 @@ const WeatherDataCard: React.FC<WeatherDataCardProps> = ({ title, icon, time, ch
   const [css, theme] = useStyletron();
 
   return (
-    <Block 
-      display={"flex"} 
-      flexDirection={"column"} 
-      marginTop={"5vh"} 
-      className={css({ borderRadius: ".75rem", border: `1px solid ${theme.colors.primaryA}` })} 
+    <Block
+      display={"flex"}
+      flexDirection={"column"}
+      marginTop={"5vh"}
+      backgroundColor={theme.colors.backgroundSecondary}
+      className={css({ borderRadius: ".75rem", border: `1px solid ${theme.colors.primaryA}` })}
       {...props}
     >
-      <Block
-        display={"flex"}
-        justifyContent={"space-between"}
-        width={"100%"}
-        padding={["1vh 3vw", "1vh 3vw", "1vh 1rem", "1vh 1rem"]}
-        backgroundColor={theme.colors.primaryA}
-        className={css({ borderTopLeftRadius: ".75rem", borderTopRightRadius: ".75rem" })}
-      >
-        <Block display={"flex"} alignItems={"center"} gridGap={".25rem"}>
-          {icon}
-          <Heading styleLevel={6} margin={0} color={theme.colors.backgroundSecondary}>{title}</Heading>
+      <HeadingLevel>
+        <Block
+          display={"flex"}
+          justifyContent={"space-between"}
+          width={"100%"}
+          padding={["1vh 3vw", "1vh 3vw", "1vh 1rem", "1vh 1rem"]}
+          backgroundColor={theme.colors.primaryA}
+          className={css({ borderTopLeftRadius: ".75rem", borderTopRightRadius: ".75rem" })}
+        >
+          <Block display={"flex"} alignItems={"center"} gridGap={".25rem"}>
+            {icon}
+            <Heading styleLevel={6} margin={0} color={theme.colors.backgroundSecondary}>{title}</Heading>
+          </Block>
+          <ParagraphLarge margin={0} color={theme.colors.backgroundSecondary}>{time}</ParagraphLarge>
         </Block>
-        <ParagraphLarge margin={0} color={theme.colors.backgroundSecondary}>{time}</ParagraphLarge>
-      </Block>
-      <Block 
-        display={"flex"} 
-        flexDirection={["row", "row", "column", "column"]} 
-        alignItems={["center", "center", "start", "start"]} 
-        justifyContent={"center"} 
-        padding={"1rem 1rem"}
-      >
-        {children}
-      </Block>
+        <Block
+          display={"flex"}
+          flexDirection={["row", "row", "column", "column"]}
+          alignItems={["center", "center", "start", "start"]}
+          justifyContent={"center"}
+          padding={"1rem 1rem"}
+        >
+          {children}
+        </Block>
+      </HeadingLevel>
     </Block>
   );
 }

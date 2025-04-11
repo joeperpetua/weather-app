@@ -19,6 +19,7 @@ import DashboardAdd from './routes/Dashboard/DashboardAdd';
 import NotFound from './routes/NotFound';
 import { customTheme } from './customTheme';
 import CityRoute from './routes/City';
+import ScrollToTop from './ui/ScrollToTop';
 // import { customThemeV2 } from './customThemeV2';
 
 const engine = new Styletron();
@@ -30,6 +31,7 @@ createRoot(document.getElementById('root')!).render(
         <BaseProvider theme={customTheme}>
           <SnackbarProvider placement={PLACEMENT.bottom}>
             <BrowserRouter>
+              <ScrollToTop />
               <AuthProvider>
                 <Routes>
                   <Route element={<Layout />} >
