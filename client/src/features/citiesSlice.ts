@@ -126,7 +126,7 @@ export const fetchDailyForecast = createAsyncThunk(
   async (args: { id: number, units: 'metric' | 'imperial' }, { rejectWithValue }) => {
     try {
       const cityForecast = selectDailyForecastById(store.getState().cities, args.id);
-      if (cityForecast) {
+      if (cityForecast && cityForecast.forecast.units === args.units) {
         return cityForecast;
       }
 
@@ -146,7 +146,7 @@ export const fetchHourlyForecast = createAsyncThunk(
   async (args: { id: number, units: 'metric' | 'imperial' }, { rejectWithValue }) => {
     try {
       const cityForecast = selectHourlyForecastById(store.getState().cities, args.id);
-      if (cityForecast) {
+      if (cityForecast && cityForecast.forecast.units === args.units) {
         return cityForecast;
       }
 

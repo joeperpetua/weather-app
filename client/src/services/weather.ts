@@ -186,3 +186,5 @@ export const getAQI = (index: number, standard: "eu" | "us") => {
 
 export const getWeatherDescription = (code: number) =>  wmoCodeMap.find(entry => entry.code === code)?.description ?? '';
 
+export const windUnit = (unit: "metric" | "imperial") => unit === "metric" ? "km/h" : "mph";
+export const precipitationUnit = (unit: "metric" | "imperial") => unit === "metric" ? "mm" : "in";

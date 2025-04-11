@@ -7,6 +7,7 @@ import WeatherDataCard from "./WeatherDataCard";
 import DayInformation from "./DayInformation";
 import { timezoneToGMT, getLocalTimeTimezone } from "../../services/time";
 import { getWeatherDescription } from "../../services/weather";
+import { HeadingLevel } from "baseui/heading";
 
 interface ContentProps {
   temperature: number;
@@ -26,35 +27,36 @@ interface CurrentWeatherCardProps extends ContentProps {
   humidity: number;
   uvIndex: number;
   aqi: number;
+  unitSystem: "metric" | "imperial";
 }
 
-const Content: React.FC<ContentProps> = ({ temperature, weatherCode, apparentTemperature, temperatureMin, temperatureMax }) => {
+export const Content: React.FC<ContentProps> = ({ temperature, weatherCode, apparentTemperature, temperatureMin, temperatureMax }) => {
   const [css] = useStyletron();
 
   return (
-    <>
+    <HeadingLevel>
       <Block display={"flex"} justifyContent={["space-between", "space-around"]} alignItems={"center"} width={"100%"}>
-        <DisplayLarge marginBottom={0} className={css({ fontSize: "5.5rem" })}>{temperature.toFixed(0)}°</DisplayLarge>
+        <DisplayLarge marginBottom={0} className={css({ fontSize: "5.5rem" })}>{temperature}°</DisplayLarge>
         <WeatherIcon weatherCode={weatherCode} size={8} />
       </Block>
 
       <Block display={"flex"} flexDirection={"column"} justifyContent={"space-between"} gridGap={"3vh"} marginLeft={"2.5vw"}>
         <HeadingWeightless styleLevel={3} margin={0}>{getWeatherDescription(weatherCode)}</HeadingWeightless>
         <Block display={"flex"} flexDirection={"column"} gridGap={"1vh"}>
-          <HeadingWeightless styleLevel={3} margin={0}>Feels like {apparentTemperature.toFixed(0)}°</HeadingWeightless>
-          <HeadingWeightless styleLevel={3} margin={0}>{temperatureMax.toFixed(0)}° / {temperatureMin.toFixed(0)}°</HeadingWeightless>
+          <HeadingWeightless styleLevel={3} margin={0}>Feels like {apparentTemperature}°</HeadingWeightless>
+          <HeadingWeightless styleLevel={3} margin={0}>{temperatureMax}° / {temperatureMin}°</HeadingWeightless>
         </Block>
       </Block>
-    </>
+    </HeadingLevel>
   );
 }
 
-const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ 
-  temperature, 
-  weatherCode, 
-  apparentTemperature, 
-  temperatureMin, 
-  temperatureMax, 
+const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
+  temperature,
+  weatherCode,
+  apparentTemperature,
+  temperatureMin,
+  temperatureMax,
   timezone,
   precipitation,
   windSpeed,
@@ -62,7 +64,8 @@ const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
   windGust,
   humidity,
   uvIndex,
-  aqi
+  aqi,
+  unitSystem
 }) => {
   const offset = timezoneToGMT(timezone);
   const { hour, minute } = getLocalTimeTimezone(timezone);
@@ -109,6 +112,7 @@ const CurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
           humidity={humidity}
           uvIndex={uvIndex}
           aqi={aqi}
+          unitSystem={unitSystem}
         />
       </Block>
 

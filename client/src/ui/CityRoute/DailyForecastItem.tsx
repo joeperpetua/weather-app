@@ -5,7 +5,7 @@ import HeadingWeightless from "../HeadingWeightless";
 import WeatherIcon from "../WeatherIcon";
 import DataIcon from "../DataIcon";
 import { weekdays, formatPrettyDate } from "../../services/time";
-import { angleToDirection, getUVRiskInfo } from "../../services/weather";
+import { angleToDirection, getUVRiskInfo, windUnit } from "../../services/weather";
 
 interface DailyForecastItemProps {
   today: boolean;
@@ -18,6 +18,7 @@ interface DailyForecastItemProps {
   windDirection: number;
   humidity: number;
   uvIndex: number;
+  unitSystem: 'metric' | 'imperial';
 }
 
 const DailyForecastItem: React.FC<DailyForecastItemProps> = ({
@@ -30,7 +31,8 @@ const DailyForecastItem: React.FC<DailyForecastItemProps> = ({
   windSpeed,
   windDirection,
   humidity,
-  uvIndex
+  uvIndex,
+  unitSystem
 }) => {
   const [css, theme] = useStyletron();
   const day = today ? "Today" : weekdays[new Date(date).getDay()];
@@ -103,11 +105,11 @@ const DailyForecastItem: React.FC<DailyForecastItemProps> = ({
             data="Wind"
             iconId={995}
             iconSize={2}
-            tooltip={`Wind speeds: ${angleToDirection(windDirection)} ${windSpeed.toFixed(0)}km/h`}
+            tooltip={`Wind speeds: ${angleToDirection(windDirection)} ${windSpeed.toFixed(0)}${windUnit(unitSystem)}`}
             mobile={false}
             width={"auto"}
           />
-          <Heading styleLevel={6}>{`${angleToDirection(windDirection, 'icon')} ${windSpeed.toFixed(0)}km/h`}</Heading>
+          <Heading styleLevel={6}>{`${angleToDirection(windDirection, 'icon')} ${windSpeed.toFixed(0)}${windUnit(unitSystem)}`}</Heading>
         </Block>
 
         <Block display={"flex"} alignItems={"center"} justifyContent={"space-between"} width={"47%"} >

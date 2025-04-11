@@ -2,7 +2,7 @@ import { Block } from "baseui/block";
 import { Heading } from "baseui/heading";
 import { useStyletron } from "baseui";
 import WeatherIcon from "../WeatherIcon";
-import { angleToDirection, getUVRiskInfo } from "../../services/weather";
+import { angleToDirection, getUVRiskInfo, windUnit } from "../../services/weather";
 import DataIcon from "../DataIcon";
 
 interface HourlyForecastItemProps {
@@ -13,6 +13,7 @@ interface HourlyForecastItemProps {
   windSpeed: number;
   windDirection: number;
   uvIndex: number;
+  unitSystem: 'metric' | 'imperial';
 }
 
 const HourlyForecastItem: React.FC<HourlyForecastItemProps> = ({
@@ -22,7 +23,8 @@ const HourlyForecastItem: React.FC<HourlyForecastItemProps> = ({
   precipitationProbability,
   windSpeed,
   windDirection,
-  uvIndex
+  uvIndex,
+  unitSystem
 }) => {
   const [css, theme] = useStyletron();
 
@@ -65,7 +67,7 @@ const HourlyForecastItem: React.FC<HourlyForecastItemProps> = ({
           mobile={false}
         />
         <DataIcon 
-          data={`${windSpeed.toFixed(0)}km/h`}
+          data={`${windSpeed.toFixed(0)}${windUnit(unitSystem)}`}
           tooltip={"Wind speed"}
           iconId={994}
           mobile={false}

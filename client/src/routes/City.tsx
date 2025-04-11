@@ -25,6 +25,7 @@ const CityRoute = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { loading } = useSelector((state: RootState) => state.cities);
+  const { unitSystem } = useSelector((state: RootState) => state.settings);
   const city = useSelector((state: RootState) => selectCityById(state.cities, Number(params.id) || -1));
   const dailyForecast = useSelector((state: RootState) => selectDailyForecastById(state.cities, Number(params.id) || -1));
   const hourlyForecast = useSelector((state: RootState) => selectHourlyForecastById(state.cities, Number(params.id) || -1));
@@ -34,13 +35,13 @@ const CityRoute = () => {
     dispatch(fetchCities()).unwrap().catch(error => ErrorSnackbar('Failed to fetch cities.', error, enqueue, dequeue));
 
     dispatch(fetchDailyForecast(
-      { id: Number(params.id) || -1, units: 'metric' }
+      { id: Number(params.id) || -1, units: unitSystem }
     )).unwrap().catch(error => ErrorSnackbar('Failed to fetch daily forecast.', error, enqueue, dequeue));
 
     dispatch(fetchHourlyForecast(
-      { id: Number(params.id) || -1, units: 'metric' }
+      { id: Number(params.id) || -1, units: unitSystem }
     )).unwrap().catch(error => ErrorSnackbar('Failed to fetch daily forecast.', error, enqueue, dequeue));
-  }, []);
+  }, [unitSystem, location]);
 
   // Redirect in case the URL is malformed, but the id points to am existing city
   useEffect(() => {
@@ -84,6 +85,7 @@ const CityRoute = () => {
           windGust={hourlyForecast.forecast.windGust[currentHour]}
           uvIndex={hourlyForecast.forecast.uvIndex[currentHour]}
           aqi={hourlyForecast.forecast.aqi[currentHour]}
+          unitSystem={unitSystem}
         />
 
         <ForecastCard
@@ -101,6 +103,7 @@ const CityRoute = () => {
                 windSpeed={hourlyForecast.forecast.windSpeed[currentHour + index]}
                 windDirection={hourlyForecast.forecast.windDirection[currentHour + index]}
                 uvIndex={hourlyForecast.forecast.uvIndex[currentHour + index]}
+                unitSystem={unitSystem}
               />
             ))}
           </Block>
@@ -121,6 +124,7 @@ const CityRoute = () => {
                 windDirection={dailyForecast.forecast.windDirection[index]}
                 humidity={dailyForecast.forecast.relativeHumidity[index]}
                 uvIndex={dailyForecast.forecast.uvIndex[index]}
+                unitSystem={unitSystem}
               />
             ))}
           </Block>
@@ -139,6 +143,7 @@ const CityRoute = () => {
           windGust={hourlyForecast.forecast.windGust[currentHour]}
           uvIndex={hourlyForecast.forecast.uvIndex[currentHour]}
           aqi={hourlyForecast.forecast.aqi[currentHour]}
+          unitSystem={unitSystem}
         />
 
       </HeadingLevel>

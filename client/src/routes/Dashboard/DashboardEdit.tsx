@@ -35,7 +35,8 @@ const DashboardEdit = () => {
     );
   }
 
-  const handleSubmit = async (parsedCity: City) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, parsedCity: City) => {
+    e.preventDefault();
     dispatch(updateCity({ id: city.id!, city: parsedCity, token })).unwrap().then(() => {
       SuccessSnackbar("City edited successfully", "Back to dashboard", enqueue, () => navigate("/dashboard"));
     }).catch(error => ErrorSnackbar("Failed to edit city", error, enqueue, dequeue));

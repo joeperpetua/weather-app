@@ -52,6 +52,7 @@ export interface DailyForecast {
   weatherCode: number[];
   windDirection: number[];
   windSpeed: number[];
+  units: 'metric' | 'imperial';
 }
 
 export interface HourlyForecast {
@@ -67,6 +68,7 @@ export interface HourlyForecast {
   windSpeed: number[];
   apparentTemperature: number[];
   aqi: number[];
+  units: 'metric' | 'imperial';
 }
 
 // Internal types

@@ -2,7 +2,7 @@ import { useStyletron } from "baseui";
 import { Block, BlockProps } from "baseui/block";
 import { Heading } from "baseui/heading";
 import { IoRainy } from "react-icons/io5";
-import { angleToDirection, getUVRiskInfo, getAQI } from "../../services/weather";
+import { angleToDirection, getUVRiskInfo, getAQI, windUnit, precipitationUnit } from "../../services/weather";
 import WeatherDataCard from "./WeatherDataCard";
 import { WiHumidity } from "react-icons/wi";
 import { GiWindsock } from "react-icons/gi";
@@ -33,6 +33,7 @@ interface DayInformationProps extends BlockProps {
   uvIndex: number;
   aqi: number;
   childrenProps: BlockProps;
+  unitSystem: 'metric' | 'imperial';
 };
 
 const DayInformation: React.FC<DayInformationProps> = ({
@@ -44,9 +45,10 @@ const DayInformation: React.FC<DayInformationProps> = ({
   uvIndex,
   aqi,
   childrenProps,
+  unitSystem,
   ...props
 }) => {
-  const [css, theme] = useStyletron();
+  const [_, theme] = useStyletron();
 
   return (
     <Block display={"flex"} flexWrap={true} justifyContent={"space-between"} {...props} >
@@ -55,7 +57,7 @@ const DayInformation: React.FC<DayInformationProps> = ({
         icon={<IoRainy size={20} color={theme.colors.backgroundSecondary} />}
         {...childrenProps}
       >
-        <Heading styleLevel={6} margin={0}>{precipitation.toFixed(0)}mm</Heading>
+        <Heading styleLevel={6} margin={0}>{`${precipitation.toFixed(0)} ${precipitationUnit(unitSystem)}`}</Heading>
       </WeatherDataCard>
 
       <WeatherDataCard
@@ -72,7 +74,7 @@ const DayInformation: React.FC<DayInformationProps> = ({
         {...childrenProps}
       >
         <Heading styleLevel={6} margin={0}>
-          {`${angleToDirection(windDirection, "icon")} ${windSpeed.toFixed(0)}km/h`}
+          {`${angleToDirection(windDirection, "icon")} ${windSpeed.toFixed(0)}${windUnit(unitSystem)}`}
         </Heading>
       </WeatherDataCard>
 
@@ -81,7 +83,7 @@ const DayInformation: React.FC<DayInformationProps> = ({
         icon={<FaWind size={20} color={theme.colors.backgroundSecondary} />}
         {...childrenProps}
       >
-        <Heading styleLevel={6} margin={0}>{windGust.toFixed(0)}km/h</Heading>
+        <Heading styleLevel={6} margin={0}>{`${windGust.toFixed(0)}${windUnit(unitSystem)}`}</Heading>
       </WeatherDataCard>
 
       <WeatherDataCard
