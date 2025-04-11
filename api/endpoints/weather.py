@@ -114,7 +114,8 @@ def get_forecast_daily(cityId: int, days: int, units: str):
         "precipitationProbability": __extract_values(data.Variables(4)),
         "windSpeed": __extract_values(data.Variables(5)),
         "windDirection": __extract_values(data.Variables(6)),
-        "relativeHumidity": __extract_values(data.Variables(7))
+        "relativeHumidity": __extract_values(data.Variables(7)),
+        "units": units
     }
 
     return forecast, 200
@@ -172,7 +173,8 @@ def get_forecast_hourly(cityId: int, days: int, units: str):
         "windDirection": __extract_values(data.Variables(7)),
         "windGust": __extract_values(data.Variables(8)),
         "uvIndex": __extract_values(data.Variables(9)),
-        "aqi": __extract_values(data_aqi.Variables(0))
+        "aqi": __extract_values(data_aqi.Variables(0)),
+        "units": units
     }
 
     return forecast, 200

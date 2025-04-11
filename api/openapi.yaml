@@ -462,6 +462,7 @@ components:
         - windSpeed
         - windDirection
         - relativeHumidity
+        - units
       example:
         date: ["2023-01-01", "2023-01-02", "2023-01-03"]
         weatherCode: [0, 3, 3]
@@ -472,6 +473,7 @@ components:
         windSpeed: [10, 20, 30]
         windDirection: [10, 20, 30]
         relativeHumidity: [10, 20, 30]
+        units: "metric"
       properties:
         day:
           description: List of forecast dates. ISO8601 format.
@@ -535,6 +537,10 @@ components:
             type: number
             minimum: 0
             maximum: 100
+        units:
+          type: string
+          description: Units of measurement for the data in the response.
+          enum: ["metric", "imperial"]
 
     ForecastHourly:
       type: object
@@ -552,6 +558,7 @@ components:
         - windGust
         - uvIndex
         - aqi
+        - units
       example:
         date: [
           "2025-04-10T00:00",
@@ -590,6 +597,7 @@ components:
         windGust: [5, 7, 9, 12, 14, 15, 16, 18, 20, 22, 23, 24, 26, 28, 30, 32, 34, 35, 36, 38, 40, 42, 44, 46]
         uvIndex: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7]
         aqi: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145]
+        units: "metric"
       properties:
         date:
           description: Date and hour for each forecast. ISO8601 format.
@@ -674,6 +682,10 @@ components:
             type: number
             minimum: 0
             maximum: 999
+        units:
+          type: string
+          description: Units of measurement for the data in the response.
+          enum: ["metric", "imperial"]
 
     HistoricalHourly:
       type: object
