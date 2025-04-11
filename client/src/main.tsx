@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Route, Routes } from "react-router";
+import { HashRouter, Route, Routes } from "react-router";
 import { Client as Styletron } from "styletron-engine-monolithic";
 import { Provider as StyletronProvider } from "styletron-react";
 import { BaseProvider } from "baseui";
@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')!).render(
       <StyletronProvider value={engine}>
         <BaseProvider theme={customTheme}>
           <SnackbarProvider placement={PLACEMENT.bottom}>
-            <BrowserRouter>
+            <HashRouter>
               <ScrollToTop />
               <AuthProvider>
                 <Routes>
@@ -49,7 +49,7 @@ createRoot(document.getElementById('root')!).render(
 
                 </Routes>
               </AuthProvider>
-            </BrowserRouter>
+            </HashRouter>
           </SnackbarProvider>
         </BaseProvider>
       </StyletronProvider>
