@@ -5,6 +5,11 @@ on:
       - main
 permissions:
   contents: write
+
+env: 
+  VITE_API_URL: https://weather-api.joeper.myds.me
+  VITE_GEO_API_URL: https://geocoding-api.open-meteo.com/v1/search
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
