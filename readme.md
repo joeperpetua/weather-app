@@ -1,7 +1,7 @@
 # WeatherApp
 Live Demo:  
-- [Webapp](https://q6ulhs-ip-62-178-15-109.tunnelmole.net/)  
-- [Backend](https://noazyg-ip-62-178-15-109.tunnelmole.net/)  
+- Front: NA
+- Backend: [https://weather-api.joeper.myds.me](https://weather-api.joeper.myds.me)
 
 This web application was made with the following stack:
 - Backend:
